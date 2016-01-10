@@ -7,12 +7,11 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/codegangsta/cli"
 	"github.com/erasche/gologme"
 )
 
-var logbuffer int = 4
-
-func main() {
+func log(logbuffer int) {
 	window_titles := make(chan *gologme.WindowLogs)
 	keypresses := make(chan *gologme.KeyLogs, 1000)
 
@@ -53,4 +52,22 @@ func main() {
 		wl[wi] = *(<-window_titles)
 		wi++
 	}
+}
+
+func main() {
+	app := cli.NewApp()
+	app.Name = "ulogme"
+	app.Usage = "local logging client"
+	app.Flags = []cli.Flag{
+		cli.IntFlag{
+			Name:  "buffSize",
+			Value: 32,
+			Usage: "size of buffer before sending logs",
+		},
+	}
+
+	app.Action = func(c *cli.Context) {
+		log(c.Int("buffSize"))
+	}
+	app.Run(os.Args)
 }
