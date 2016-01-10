@@ -14,9 +14,12 @@ var logbuffer int = 32
 
 func main() {
 	window_titles := make(chan *gologme.WindowLogs)
+	keypresses := make(chan *gologme.KeyLogs, 1000)
 
 	// Start logging
 	go logWindows(window_titles)
+	go logKeys(keypresses)
+
 	wl := make([]gologme.WindowLogs, logbuffer)
 	wi := 0
 	first := true
@@ -30,7 +33,7 @@ func main() {
 	go func() {
 		// In cleanup, we need to
 		<-exit_chan
-		send(wl, wi)
+		send(wl, wi, logKeyList(keypresses))
 		os.Exit(1)
 	}()
 
@@ -43,7 +46,7 @@ func main() {
 		}
 		// and send
 		if wi == 0 && !first {
-			send(wl, len(wl))
+			send(wl, len(wl), logKeyList(keypresses))
 		}
 
 		//Stick in next log position

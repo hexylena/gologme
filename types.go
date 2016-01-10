@@ -16,3 +16,8 @@ type WindowLogs struct {
 	Name string
 	Time time.Time
 }
+
+type KeyLogs struct {
+	Time time.Time
+    Name string
+}
