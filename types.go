@@ -7,9 +7,11 @@ import (
 type Result int
 
 type RpcArgs struct {
-	User    int
+	User    string
+    ApiKey  string
 	Windows []WindowLogs
-	Length  int
+    KeyLogs []KeyLogs
+	WindowLogsLength  int
 }
 
 type WindowLogs struct {

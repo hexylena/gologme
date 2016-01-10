@@ -17,31 +17,49 @@ type Golog struct {
 	Db *sql.DB
 }
 
-func (t *Golog) Log(args gologme.RpcArgs, result *gologme.Result) error {
+func (t *Golog) LogStmt(uid int, windowlogs []gologme.WindowLogs, keylogs []gologme.KeyLogs, wll int){
 	tx, err := t.Db.Begin()
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	stmt, err := tx.Prepare("insert into windowLogs (time, name) values (?, ?)")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer stmt.Close()
 
-	log.Printf("%d logs from [%d]\n", args.Length, args.User)
-	for i, w := range args.Windows {
+	log.Printf("%d logs from [%d]\n", wll, uid)
+	for i, w := range windowlogs {
 		_, err = stmt.Exec(w.Time.Unix(), w.Name)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		if i >= args.Length-1 {
+		if i >= wll - 1 {
 			break
 		}
 	}
 
 	tx.Commit()
+}
+
+func (t *Golog) EnsureAuth(user string, key string) (int, error) {
+	return -1, nil
+}
+
+func (t *Golog) Log(args gologme.RpcArgs, result *gologme.Result) error {
+	uid, err := t.EnsureAuth(args.User, args.ApiKey)
+	if err != nil {
+		*result = 1
+		return nil
+	}
+
+	t.LogStmt(
+		uid,
+		args.Windows,
+		args.KeyLogs,
+		args.WindowLogsLength,
+	)
 	*result = 0
 	return nil
 }
