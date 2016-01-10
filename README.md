@@ -13,3 +13,7 @@ And mostly I want to practice go more :)
 
 - [ ] better name
 - [ ] cross platform stuff? Hmm.
+
+## LICENSE
+
+AGPLv3
