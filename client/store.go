@@ -1,27 +1,27 @@
 package main
 
 import (
-    "fmt"
+	"fmt"
+	"github.com/erasche/gologme"
 	"log"
 	"net/rpc"
-	"github.com/erasche/gologme"
 )
 
-func send(wl []gologme.WindowLogs, wi int, kl []gologme.KeyLogs){
-    send_local(wl, wi)
-    for i, e := range(kl){
-        fmt.Printf("KL: %d - %s\n", i, e)
-    }
-    //send_remote(wl, wi)
+func send(wl []gologme.WindowLogs, wi int, kl []gologme.KeyLogs) {
+	send_local(wl, wi)
+	for i, e := range kl {
+		fmt.Printf("KL: %d - %s\n", i, e)
+	}
+	//send_remote(wl, wi)
 }
 
-func send_local(wl []gologme.WindowLogs, wi int){
-    for i, w := range(wl){
-        fmt.Printf("WL: %s\n", w)
-        if i >= wi-1 {
-            break
-        }
-    }
+func send_local(wl []gologme.WindowLogs, wi int) {
+	for i, w := range wl {
+		fmt.Printf("WL: %s\n", w)
+		if i >= wi-1 {
+			break
+		}
+	}
 }
 
 func send_remote(wl []gologme.WindowLogs, wi int) {
@@ -40,4 +40,3 @@ func send_remote(wl []gologme.WindowLogs, wi int) {
 		log.Fatal("Error calling RPC method", err)
 	}
 }
-

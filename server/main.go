@@ -3,9 +3,9 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/erasche/gologme"
-	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"net"
@@ -36,7 +36,7 @@ func (t *Golog) Log(args gologme.RpcArgs, result *gologme.Result) error {
 			log.Fatal(err)
 		}
 
-		if i >= args.Length - 1{
+		if i >= args.Length-1 {
 			break
 		}
 	}
@@ -48,7 +48,7 @@ func (t *Golog) Log(args gologme.RpcArgs, result *gologme.Result) error {
 
 func main() {
 	db, err := sql.Open("sqlite3", "file.db")
-	if err != nil{
+	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()

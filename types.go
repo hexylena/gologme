@@ -19,5 +19,5 @@ type WindowLogs struct {
 
 type KeyLogs struct {
 	Time time.Time
-    Name string
+	Name string
 }
