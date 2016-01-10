@@ -45,7 +45,7 @@ func importWindows(t *Golog, uid int, logDir string) {
 	tx.Commit()
 }
 
-func exportWindows(t *Golog, uid int) (int64, []ExportLog) {
+func exportWindows(t *Golog, uid int) []ExportLog {
 	stmt, err := t.Db.Prepare("select time, name from windowLogs where uid = ?")
 	if err != nil {
 		log.Fatal(err)
@@ -59,7 +59,6 @@ func exportWindows(t *Golog, uid int) (int64, []ExportLog) {
 	defer rows.Close()
 
 	logs := make([]ExportLog, 0)
-	var ulogtime int64 = 0
 	for rows.Next() {
 		var (
 			ltime int64
@@ -68,11 +67,10 @@ func exportWindows(t *Golog, uid int) (int64, []ExportLog) {
 
 		rows.Scan(&ltime, &name)
 		realTime := time.Unix(ltime, 0)
-		ulogtime = Ulogme7amTime(realTime)
 		logs = append(logs, ExportLog{
 			RealTime: realTime,
 			Title:    name,
 		})
 	}
-	return ulogtime, logs
+	return logs
 }

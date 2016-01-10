@@ -18,14 +18,35 @@ type ExportLog struct {
 	Title    string
 }
 
-func WriteFile(category string, ulogtime int64, windows []ExportLog, dir string) {
+func WriteFile(category string, windows []ExportLog, dir string) {
 	err := os.MkdirAll(dir, 0777)
-	f, err := os.Create(fmt.Sprintf("%s/%s_%d.txt", dir, category, ulogtime))
 	if err != nil {
 		log.Fatal(err)
 	}
+	var (
+		f            *os.File
+		lastUlogTime int64
+		init         bool = false
+	)
 
 	for _, wl := range windows {
+		ult := Ulogme7amTime(wl.RealTime)
+		if !init || ult != lastUlogTime {
+			println(ult)
+			if !init {
+				err = f.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}
+			f, err = os.Create(fmt.Sprintf("%s/%s_%d.txt",
+				dir, category, ult))
+			if err != nil {
+				log.Fatal(err)
+			}
+			lastUlogTime = ult
+			init = true
+		}
 		f.WriteString(fmt.Sprintf("%d %s\n", wl.RealTime.Unix(), wl.Title))
 	}
 }

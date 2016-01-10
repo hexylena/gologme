@@ -60,14 +60,13 @@ func main() {
 			},
 			Usage: "import logs",
 			Action: func(c *cli.Context) {
-				ulogtime, logs := exportWindows(
+				logs := exportWindows(
 					golog,
 					c.Int("uid"),
 				)
 				if len(logs) > 0 {
 					WriteFile(
 						"window",
-						ulogtime,
 						logs,
 						c.String("logDir"),
 					)
