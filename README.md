@@ -12,6 +12,7 @@ And mostly I want to practice go more :)
 
 - Feature parity with ulogme
 - Android client
+- multi-user support (Why? Who knows. Seems easy to tack on)
 
 ## TODO
 

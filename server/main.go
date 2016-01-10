@@ -24,7 +24,7 @@ func (t *Golog) logToDb(uid int, windowlogs []gologme.WindowLogs, keylogs []golo
 	if err != nil {
 		log.Fatal(err)
 	}
-	stmt, err := tx.Prepare("insert into windowLogs (time, name) values (?, ?)")
+	stmt, err := tx.Prepare("insert into windowLogs (uid, time, name) values (?, ?, ?)")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -32,7 +32,7 @@ func (t *Golog) logToDb(uid int, windowlogs []gologme.WindowLogs, keylogs []golo
 
 	log.Printf("%d logs from [%d]\n", wll, uid)
 	for i, w := range windowlogs {
-		_, err = stmt.Exec(w.Time.Unix(), w.Name)
+		_, err = stmt.Exec(uid, w.Time.Unix(), w.Name)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -107,8 +107,18 @@ func (t *Golog) setupDb(db *sql.DB) {
 		time integer,
 		count integer,
 		foreign key (uid) references users(id)
-	)
+	);
+
+	create table if not exists notes (
+		id integer not null primary key autoincrement,
+		uid integer,
+		time integer,
+		type integer,
+		contents text,
+		foreign key (uid) references users(id)
+	);
 	`
+	// notes.type is either 0 for daily blog or 1 for point-in-time note
 
 	_, err := db.Exec(dbCreation)
 	if err != nil {
