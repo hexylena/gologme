@@ -7,6 +7,7 @@ import (
 )
 
 func send(wl []gologme.WindowLogs, wi int, kl []gologme.KeyLogs) {
+	// TODO: implement a local-only mode
 	//send_local(wl, wi, kl)
 	//for i, e := range kl {
 	//fmt.Printf("KL: %d - %s\n", i, e)
@@ -27,7 +28,7 @@ func send_remote(wl []gologme.WindowLogs, kl []gologme.KeyLogs, wi int) {
 	client, err := rpc.DialHTTP("tcp", ":8080")
 	if err != nil {
 		fmt.Printf("Error in dialing, droping logs, %s\n", err)
-        return
+		return
 		// TODO: requeue
 	}
 	args := &gologme.RpcArgs{
@@ -41,7 +42,7 @@ func send_remote(wl []gologme.WindowLogs, kl []gologme.KeyLogs, wi int) {
 	err = client.Call("Golog.Log", args, &result)
 	if err != nil {
 		fmt.Printf("Error in calling RPC method, droping logs, %s\n", err)
-        return
+		return
 		// TODO: retry
 	}
 }
