@@ -1,18 +1,25 @@
 # gologme
 
 Ulogme is awesomesauce, but there are some not so great things. Namely
-that I have to set it up on a bunch of computers and I can't compile logs
-in a single place. This is even worse when considering android.
-
-I want all of my devices going to one place, I want nice deliniation
-of "work" and counters for "work time" ensure I hit 40/week.
+that I have to set it up on a bunch of computers and it requires multiple
+tools running in the background and they don't always exit as cleanly as
+they should. That and I can't compile logs in a single place. This is even
+worse when considering android in the mix.
 
 And mostly I want to practice go more :)
 
+## Goals
+
+- Feature parity with ulogme
+- Android client
+
 ## TODO
 
-- [ ] better name
-- [ ] cross platform stuff? Hmm.
+- [ ] Server auth
+- [ ] lockscreen detection
+- [ ] cross platform logging
+  - https://github.com/kavu/AyeAye/ maybe
+  - PRs welcome since I don't have a mac.
 
 ## LICENSE
 
