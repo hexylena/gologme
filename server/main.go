@@ -3,6 +3,8 @@
 package main
 
 import (
+	"math/rand"
+	"time"
 	"database/sql"
 	"fmt"
 	"github.com/erasche/gologme"
@@ -17,7 +19,7 @@ type Golog struct {
 	Db *sql.DB
 }
 
-func (t *Golog) LogStmt(uid int, windowlogs []gologme.WindowLogs, keylogs []gologme.KeyLogs, wll int){
+func (t *Golog) logToDb(uid int, windowlogs []gologme.WindowLogs, keylogs []gologme.KeyLogs, wll int){
 	tx, err := t.Db.Begin()
 	if err != nil {
 		log.Fatal(err)
@@ -34,7 +36,6 @@ func (t *Golog) LogStmt(uid int, windowlogs []gologme.WindowLogs, keylogs []golo
 		if err != nil {
 			log.Fatal(err)
 		}
-
 		if i >= wll - 1 {
 			break
 		}
@@ -43,25 +44,68 @@ func (t *Golog) LogStmt(uid int, windowlogs []gologme.WindowLogs, keylogs []golo
 	tx.Commit()
 }
 
-func (t *Golog) EnsureAuth(user string, key string) (int, error) {
-	return -1, nil
+func (t *Golog) ensureAuth(user string, key string) (int, error) {
+	// Pretty assuredly not safe from timing attacks.
+	stmt, err := t.Db.Prepare("select id from users where username = ? and api_key = ?")
+	if err != nil {
+		return -1, err
+	}
+	defer stmt.Close()
+
+	// Maybe helps against timing attacks? Hmm.
+	time.Sleep(time.Duration(rand.Int31n(1000)) * time.Millisecond)
+
+	var uid int
+	err = stmt.QueryRow(user, key).Scan(&uid)
+	if err != nil {
+		return -1, err
+	}
+
+	return uid, nil
 }
 
 func (t *Golog) Log(args gologme.RpcArgs, result *gologme.Result) error {
-	uid, err := t.EnsureAuth(args.User, args.ApiKey)
+	uid, err := t.ensureAuth(args.User, args.ApiKey)
 	if err != nil {
+		log.Fatal(err)
 		*result = 1
 		return nil
+	} else {
+		log.Printf("%s authenticated successfully as uid %d\n", args.User, uid)
 	}
 
-	t.LogStmt(
+	t.logToDb(
 		uid,
 		args.Windows,
 		args.KeyLogs,
 		args.WindowLogsLength,
 	)
+
 	*result = 0
 	return nil
+}
+
+func (t *Golog) setupDb(db *sql.DB) {
+	dbCreation := `
+	create table if not exists users (
+		id integer not null primary key autoincrement,
+		username text,
+		api_key text
+	);
+
+	create table if not exists windowLogs (
+		id integer not null primary key autoincrement,
+		time integer,
+		name text,
+		foreign key (id) references users(id)
+	)
+	`
+
+	_, err := db.Exec(dbCreation)
+	if err != nil {
+		log.Fatal(err)
+	}
+	t.Db = db
 }
 
 func main() {
@@ -71,21 +115,8 @@ func main() {
 	}
 	defer db.Close()
 
-	dbCreation := `
-	create table if not exists windowLogs (
-		id integer not null primary key,
-		time integer,
-		name text
-	)
-	`
-
-	_, err = db.Exec(dbCreation)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	golog := new(Golog)
-	golog.Db = db
+	golog.setupDb(db)
 
 	rpc.Register(golog)
 	rpc.HandleHTTP()
