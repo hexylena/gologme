@@ -127,15 +127,19 @@ func (t *Golog) setupDb(db *sql.DB) {
 	t.Db = db
 }
 
-func main() {
+func gologInit() *Golog {
 	db, err := sql.Open("sqlite3", "file.db")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
-
 	golog := new(Golog)
 	golog.setupDb(db)
+	return golog
+}
+
+func main() {
+	golog := *gologInit()
 
 	rpc.Register(golog)
 	rpc.HandleHTTP()

@@ -14,7 +14,11 @@ func logWindows(c chan *gologme.WindowLogs) {
 	}
 
 	var lastTitle string
+
+	ticker := time.Tick(2 * time.Second)
 	for {
+		<-ticker
+
 		title, err := getCurWindowTitle(X)
 		if err != nil {
 			// Ignore errors
@@ -26,7 +30,6 @@ func logWindows(c chan *gologme.WindowLogs) {
 			}
 		}
 	}
-
 }
 
 func getCurWindowTitle(X *xgb.Conn) (name string, err error) {
