@@ -140,7 +140,6 @@ func gologInit() *Golog {
 
 func main() {
 	golog := *gologInit()
-
 	rpc.Register(golog)
 	rpc.HandleHTTP()
 	l, err := net.Listen("tcp", ":8080")
@@ -148,7 +147,6 @@ func main() {
 		log.Fatal("listen error:", err)
 	}
 	fmt.Println("Listening...")
-
 	err = http.Serve(l, nil)
 	if err != nil {
 		log.Fatal("Error serving:", err)
