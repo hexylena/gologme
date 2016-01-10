@@ -39,7 +39,6 @@ func logKeys(c chan *gologme.KeyLogs) {
 	}
 	for {
 		i := <-in
-        fmt.Printf("%s %d\n", i.KeyString(), i.Type)
 		if i.Value == keylogger.EV_KEY || i.Value == keylogger.EV_REL {
 			c <- &gologme.KeyLogs{
 				Time: time.Now(),
