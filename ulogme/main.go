@@ -37,6 +37,11 @@ func main() {
 			},
 			Usage: "import logs",
 			Action: func(c *cli.Context) {
+				importWindows(
+					golog,
+					c.Int("uid"),
+					c.String("logDir"),
+				)
 			},
 		},
 		{
