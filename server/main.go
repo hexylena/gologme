@@ -95,9 +95,18 @@ func (t *Golog) setupDb(db *sql.DB) {
 
 	create table if not exists windowLogs (
 		id integer not null primary key autoincrement,
+		uid integer,
 		time integer,
 		name text,
-		foreign key (id) references users(id)
+		foreign key (uid) references users(id)
+	)
+
+	create table if not exists keyLogs (
+		id integer not null primary key autoincrement,
+		uid integer,
+		time integer,
+		count integer,
+		foreign key (uid) references users(id)
 	)
 	`
 
