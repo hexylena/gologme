@@ -10,7 +10,7 @@ import (
 	"github.com/erasche/gologme"
 )
 
-var logbuffer int = 32
+var logbuffer int = 4
 
 func main() {
 	window_titles := make(chan *gologme.WindowLogs)

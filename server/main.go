@@ -3,23 +3,23 @@
 package main
 
 import (
-	"math/rand"
-	"time"
 	"database/sql"
 	"fmt"
 	"github.com/erasche/gologme"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
+	"math/rand"
 	"net"
 	"net/http"
 	"net/rpc"
+	"time"
 )
 
 type Golog struct {
 	Db *sql.DB
 }
 
-func (t *Golog) logToDb(uid int, windowlogs []gologme.WindowLogs, keylogs []gologme.KeyLogs, wll int){
+func (t *Golog) logToDb(uid int, windowlogs []gologme.WindowLogs, keylogs []gologme.KeyLogs, wll int) {
 	tx, err := t.Db.Begin()
 	if err != nil {
 		log.Fatal(err)
@@ -36,7 +36,7 @@ func (t *Golog) logToDb(uid int, windowlogs []gologme.WindowLogs, keylogs []golo
 		if err != nil {
 			log.Fatal(err)
 		}
-		if i >= wll - 1 {
+		if i >= wll-1 {
 			break
 		}
 	}
@@ -99,7 +99,7 @@ func (t *Golog) setupDb(db *sql.DB) {
 		time integer,
 		name text,
 		foreign key (uid) references users(id)
-	)
+	);
 
 	create table if not exists keyLogs (
 		id integer not null primary key autoincrement,
