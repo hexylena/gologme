@@ -40,7 +40,6 @@ func importWindows(t *Golog, uid int, logDir string) {
 				}
 			}
 		}
-		break
 	}
 	tx.Commit()
 }
