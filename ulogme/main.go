@@ -34,14 +34,32 @@ func main() {
 					Value: 1,
 					Usage: "User ID from database",
 				},
+				cli.BoolFlag{
+					Name:  "importKeys",
+					Usage: "Import key logs",
+				},
+				cli.BoolFlag{
+					Name:  "importWindows",
+					Usage: "Import window logs",
+				},
 			},
 			Usage: "import logs",
 			Action: func(c *cli.Context) {
-				importWindows(
-					golog,
-					c.Int("uid"),
-					c.String("logDir"),
-				)
+				if c.Bool("importKeys") {
+					importKeys(
+						golog,
+						c.Int("uid"),
+						c.String("logDir"),
+					)
+				}
+
+				if c.Bool("importWindows") {
+					importWindows(
+						golog,
+						c.Int("uid"),
+						c.String("logDir"),
+					)
+				}
 			},
 		},
 		{
@@ -60,14 +78,26 @@ func main() {
 			},
 			Usage: "import logs",
 			Action: func(c *cli.Context) {
-				logs := exportWindows(
+				window_logs := exportWindows(
 					golog,
 					c.Int("uid"),
 				)
-				if len(logs) > 0 {
-					WriteFile(
+				if len(window_logs) > 0 {
+					WriteStringFile(
 						"window",
-						logs,
+						window_logs,
+						c.String("logDir"),
+					)
+				}
+
+				key_logs := exportKeys(
+					golog,
+					c.Int("uid"),
+				)
+				if len(key_logs) > 0 {
+					WriteIntFile(
+						"keyfreq",
+						key_logs,
 						c.String("logDir"),
 					)
 				}

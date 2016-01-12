@@ -10,7 +10,6 @@ func send(wl []gologme.WindowLogs, wi int, kl []gologme.KeyLogs) {
 	send_remote(wl, kl, wi)
 }
 
-
 func send_remote(wl []gologme.WindowLogs, kl []gologme.KeyLogs, wi int) {
 	client, err := rpc.DialHTTP("tcp", ":10000")
 	if err != nil {

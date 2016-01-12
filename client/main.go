@@ -67,12 +67,12 @@ func main() {
 			Usage: "size of buffer before sending logs",
 		},
 		cli.IntFlag{
-			Name: "windowLogGranularity",
+			Name:  "windowLogGranularity",
 			Value: 2000,
 			Usage: "How often to poll window title in ms",
 		},
 		cli.IntFlag{
-			Name: "keyLogGranularity",
+			Name:  "keyLogGranularity",
 			Value: 2000,
 			Usage: "How often to aggregate caught keypresses in ms",
 		},

@@ -11,7 +11,7 @@ import (
 func findKeyboard() *keylogger.KeyLogger {
 	devs, err := keylogger.NewDevices()
 	if err != nil {
-        log.Fatal(err)
+		log.Fatal(err)
 		return nil
 	}
 	for i, val := range devs {
@@ -57,12 +57,12 @@ func binLogKeys(c chan *gologme.KeyLogs, keyLoggingGranularity int) {
 		// Each clock tick
 		<-clock
 		data := logKeyList(intermediate)
-        if len(data) > 0 {
-            c <- &gologme.KeyLogs{
-                Time:  data[0].Time,
-                Count: len(data),
-            }
-        }
+		if len(data) > 0 {
+			c <- &gologme.KeyLogs{
+				Time:  data[0].Time,
+				Count: len(data),
+			}
+		}
 	}
 }
 
