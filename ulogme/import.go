@@ -32,7 +32,7 @@ func importKeys(t *Golog, uid int, logDir string) {
 			t := scanner.Text()
 			if len(t) > 11 {
 				unixtime := t[0:10]
-				count := t[10:]
+				count := t[11:]
 				i, err := strconv.ParseInt(count, 10, 64)
 				if len(unixtime) > 0 && err == nil {
 					_, err := stmt.Exec(uid, unixtime, i)
