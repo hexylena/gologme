@@ -13,13 +13,13 @@ And mostly I want to practice go more :)
 - [ ] Feature parity with ulogme
     - [x] Window Logging
     - [x] Key Logging
-    - [ ] Notes
-    - [ ] Blog
+    - [x] Notes
+    - [x] Blog
     - [ ] lockscreen detection
     - [ ] cross platform logging
       - https://github.com/kavu/AyeAye/ maybe
       - PRs welcome since I don't have a mac.
-- [x] Ulogme import/export
+- [x] Ulogme import/export. Near perfect roundtripping
 - [ ] Android client
 - [x] multi-user support (Why? Who knows. Seems easy to tack on)
 
