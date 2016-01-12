@@ -42,10 +42,22 @@ func main() {
 					Name:  "importWindows",
 					Usage: "Import window logs",
 				},
+				cli.BoolFlag{
+					Name:  "importBlogs",
+					Usage: "Import blogs",
+				},
+				cli.BoolFlag{
+					Name:  "importNotes",
+					Usage: "Import notes",
+				},
+				cli.BoolFlag{
+					Name:  "importAll",
+					Usage: "Import everything (implies --importKeys --importWindows --importBlogs --importNotes)",
+				},
 			},
 			Usage: "import logs",
 			Action: func(c *cli.Context) {
-				if c.Bool("importKeys") {
+				if c.Bool("importKeys") || c.Bool("importAll") {
 					importKeys(
 						golog,
 						c.Int("uid"),
@@ -53,8 +65,24 @@ func main() {
 					)
 				}
 
-				if c.Bool("importWindows") {
+				if c.Bool("importWindows") || c.Bool("importAll") {
 					importWindows(
+						golog,
+						c.Int("uid"),
+						c.String("logDir"),
+					)
+				}
+
+				if c.Bool("importNotes") || c.Bool("importAll") {
+					importNotes(
+						golog,
+						c.Int("uid"),
+						c.String("logDir"),
+					)
+				}
+
+				if c.Bool("importBlogs") || c.Bool("importAll") {
+					importBlogs(
 						golog,
 						c.Int("uid"),
 						c.String("logDir"),
@@ -82,25 +110,36 @@ func main() {
 					golog,
 					c.Int("uid"),
 				)
-                if len(window_logs) > 0 {
-                    WriteStringFile(
-                        "window",
-                        window_logs,
-                        c.String("logDir"),
-                    )
-                }
+				if len(window_logs) > 0 {
+					WriteStringFile(
+						"window",
+						window_logs,
+						c.String("logDir"),
+					)
+				}
 
-                key_logs := exportKeys(
-                    golog,
-                    c.Int("uid"),
-                )
-                if len(key_logs) > 0 {
-                    WriteIntFile(
-                        "keyfreq",
-                        key_logs,
-                        c.String("logDir"),
-                    )
-                }
+				key_logs := exportKeys(
+					golog,
+					c.Int("uid"),
+				)
+				if len(key_logs) > 0 {
+					WriteIntFile(
+						"keyfreq",
+						key_logs,
+						c.String("logDir"),
+					)
+				}
+
+				notes := exportNotes(
+					golog,
+					c.Int("uid"),
+				)
+				if len(notes) > 0 {
+					WriteNotes(
+						notes,
+						c.String("logDir"),
+					)
+				}
 			},
 		},
 	}

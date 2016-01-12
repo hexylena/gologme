@@ -21,3 +21,8 @@ type KeyLogs struct {
 	Time  time.Time
 	Count int
 }
+
+const (
+	BLOG_TYPE int = iota
+	NOTE_TYPE
+)

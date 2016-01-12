@@ -5,7 +5,37 @@ import (
 	"time"
 )
 
+func exportNotes(t *Golog, uid int) []NoteLog {
+	stmt, err := t.Db.Prepare("select time, type, contents from notes where uid = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
 
+	rows, err := stmt.Query(uid)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	logs := make([]NoteLog, 0)
+	for rows.Next() {
+		var (
+			ltime int64
+			ntype int
+			name  string
+		)
+
+		rows.Scan(&ltime, &ntype, &name)
+		realTime := time.Unix(ltime, 0)
+		logs = append(logs, NoteLog{
+			RealTime: realTime,
+			Type:     ntype,
+			Contents: name,
+		})
+	}
+	return logs
+}
 
 func exportWindows(t *Golog, uid int) []StringLog {
 	stmt, err := t.Db.Prepare("select time, name from windowLogs where uid = ?")

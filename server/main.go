@@ -132,7 +132,7 @@ func (t *Golog) setupDb(db *sql.DB) {
 		foreign key (uid) references users(id)
 	);
 	`
-	// notes.type is either 0 for daily blog or 1 for point-in-time note
+	// notes.type is either BLOG_TYPE for daily blog or NOTE_TYPE for point-in-time note
 
 	_, err := db.Exec(dbCreation)
 	if err != nil {
