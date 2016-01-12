@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/MarinX/keylogger"
 	"github.com/erasche/gologme"
 	"log"
@@ -12,7 +11,7 @@ import (
 func findKeyboard() *keylogger.KeyLogger {
 	devs, err := keylogger.NewDevices()
 	if err != nil {
-		fmt.Println(err)
+        log.Fatal(err)
 		return nil
 	}
 	for i, val := range devs {
