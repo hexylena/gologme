@@ -1,11 +1,20 @@
 package main
 
 import (
+	"fmt"
 	"github.com/BurntSushi/xgb"
 	"github.com/BurntSushi/xgb/xproto"
 	"github.com/erasche/gologme"
+	"os/exec"
+	"strings"
 	"time"
 )
+
+func isScreenSaverRunning() bool {
+	cmd := exec.Command("/usr/bin/xscreensaver-command", "-time")
+	stdout, _ := cmd.Output()
+	return !strings.Contains(string(stdout), "non-blanked")
+}
 
 func logWindows(c chan *gologme.WindowLogs, windowLogGranularity int) {
 	X, err := xgb.NewConn()
@@ -19,14 +28,21 @@ func logWindows(c chan *gologme.WindowLogs, windowLogGranularity int) {
 	for {
 		<-ticker
 
-		title, err := getCurWindowTitle(X)
-		if err != nil {
-			// Ignore errors
-			//log.Fatal(err)
+		if isScreenSaverRunning() {
+			// Locked
+			c <- &gologme.WindowLogs{Name: gologme.LOCKED_SCREEN, Time: time.Now()}
+			lastTitle = gologme.LOCKED_SCREEN
 		} else {
-			if title != lastTitle {
-				c <- &gologme.WindowLogs{Name: title, Time: time.Now()}
-				lastTitle = title
+
+			title, err := getCurWindowTitle(X)
+			if err != nil {
+				// Ignore errors
+				//log.Fatal(err)
+			} else {
+				if title != lastTitle {
+					c <- &gologme.WindowLogs{Name: title, Time: time.Now()}
+					lastTitle = title
+				}
 			}
 		}
 	}

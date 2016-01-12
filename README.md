@@ -10,12 +10,14 @@ And mostly I want to practice go more :)
 
 ## Goals
 
-- [ ] Feature parity with ulogme
+- [x] Feature parity with ulogme (for the subset which I care about)
     - [x] Window Logging
     - [x] Key Logging
     - [x] Notes
     - [x] Blog
-    - [ ] lockscreen detection
+    - [x] lockscreen detection
+        - [x] xscreensaver
+        - [ ] PRs welcome!
     - [ ] cross platform logging
       - https://github.com/kavu/AyeAye/ maybe
       - PRs welcome since I don't have a mac.

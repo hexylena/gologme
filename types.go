@@ -26,3 +26,5 @@ const (
 	BLOG_TYPE int = iota
 	NOTE_TYPE
 )
+
+const LOCKED_SCREEN string = "__LOCKEDSCREEN"
