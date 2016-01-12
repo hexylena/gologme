@@ -6,18 +6,29 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/codegangsta/cli"
 	"github.com/erasche/gologme"
 )
 
-func log(logbuffer int) {
+func golog(logbuffer int) {
 	window_titles := make(chan *gologme.WindowLogs)
 	keypresses := make(chan *gologme.KeyLogs, 1000)
+	ticks := make(chan bool, 10)
+
+	// Ticker
+	go func(t chan bool){
+		clock := time.Tick(11 * time.Second)
+		for {
+			<-clock
+			t<-true
+		}
+	}(ticks)
 
 	// Start logging
 	go logWindows(window_titles)
-	go logKeys(keypresses)
+	go binLogKeys(keypresses, ticks)
 
 	wl := make([]gologme.WindowLogs, logbuffer)
 	wi := 0
@@ -32,6 +43,8 @@ func log(logbuffer int) {
 	go func() {
 		// In cleanup, we need to
 		<-exit_chan
+		// Flush binLogKeys to associated chan
+		ticks<- true
 		send(wl, wi, logKeyList(keypresses))
 		os.Exit(1)
 	}()
@@ -45,6 +58,8 @@ func log(logbuffer int) {
 		}
 		// and send
 		if wi == 0 && !first {
+			// Flush binLogKeys to associated chan
+			ticks<- true
 			send(wl, len(wl), logKeyList(keypresses))
 		}
 
@@ -67,7 +82,7 @@ func main() {
 	}
 
 	app.Action = func(c *cli.Context) {
-		log(c.Int("buffSize"))
+		golog(c.Int("buffSize"))
 	}
 	app.Run(os.Args)
 }

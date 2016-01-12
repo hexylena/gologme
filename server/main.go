@@ -24,19 +24,33 @@ func (t *Golog) logToDb(uid int, windowlogs []gologme.WindowLogs, keylogs []golo
 	if err != nil {
 		log.Fatal(err)
 	}
-	stmt, err := tx.Prepare("insert into windowLogs (uid, time, name) values (?, ?, ?)")
+	wl_stmt, err := tx.Prepare("insert into windowLogs (uid, time, name) values (?, ?, ?)")
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer stmt.Close()
+	kl_stmt, err := tx.Prepare("insert into keyLogs (uid, time, count) values (?, ?, ?)")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer wl_stmt.Close()
+	defer kl_stmt.Close()
 
-	log.Printf("%d logs from [%d]\n", wll, uid)
-	for i, w := range windowlogs {
-		_, err = stmt.Exec(uid, w.Time.Unix(), w.Name)
+	log.Printf("%d window logs %d key logs from [%d]\n", wll, len(keylogs), uid)
+
+	for _, w := range keylogs {
+		_, err = kl_stmt.Exec(uid, w.Time.Unix(), w.Count)
 		if err != nil {
 			log.Fatal(err)
 		}
-		if i >= wll-1 {
+	}
+
+	for i, w := range windowlogs {
+		_, err = wl_stmt.Exec(uid, w.Time.Unix(), w.Name)
+		if err != nil {
+			log.Fatal(err)
+		}
+		// Dunno why windowLogs comes through two too big, so whatever.
+		if i >= wll - 1 {
 			break
 		}
 	}
@@ -64,7 +78,7 @@ func (t *Golog) ensureAuth(user string, key string) (int, error) {
 	return uid, nil
 }
 
-func (t *Golog) Log(args gologme.RpcArgs, result *gologme.Result) error {
+func (t *Golog) Log(args gologme.RpcArgs, result *int) error {
 	uid, err := t.ensureAuth(args.User, args.ApiKey)
 	if err != nil {
 		log.Fatal(err)
@@ -127,7 +141,8 @@ func (t *Golog) setupDb(db *sql.DB) {
 	t.Db = db
 }
 
-func gologInit() *Golog {
+
+func main() {
 	db, err := sql.Open("sqlite3", "file.db")
 	if err != nil {
 		log.Fatal(err)
@@ -135,14 +150,9 @@ func gologInit() *Golog {
 	defer db.Close()
 	golog := new(Golog)
 	golog.setupDb(db)
-	return golog
-}
-
-func main() {
-	golog := *gologInit()
 	rpc.Register(golog)
 	rpc.HandleHTTP()
-	l, err := net.Listen("tcp", ":8080")
+	l, err := net.Listen("tcp", ":10000")
 	if err != nil {
 		log.Fatal("listen error:", err)
 	}

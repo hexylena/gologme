@@ -41,9 +41,25 @@ func logKeys(c chan *gologme.KeyLogs) {
 		i := <-in
 		if i.Value == keylogger.EV_KEY || i.Value == keylogger.EV_REL {
 			c <- &gologme.KeyLogs{
-				Time: time.Now(),
-				Name: i.KeyString(),
+				Time:  time.Now(),
+				Count: 1,
+				//Name: i.KeyString(),
 			}
+		}
+	}
+}
+
+func binLogKeys(c chan *gologme.KeyLogs, t chan bool) {
+	intermediate := make(chan *gologme.KeyLogs, 1000)
+	go logKeys(intermediate)
+
+	for {
+		// Each clock tick (or other tick...)
+		<-t
+		data := logKeyList(intermediate)
+		c <- &gologme.KeyLogs{
+			Time:  data[0].Time,
+			Count: len(data),
 		}
 	}
 }
@@ -58,5 +74,4 @@ func logKeyList(c chan *gologme.KeyLogs) []gologme.KeyLogs {
 			return slice
 		}
 	}
-	return nil
 }

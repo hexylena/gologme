@@ -25,7 +25,7 @@ func send_local(wl []gologme.WindowLogs, kl []gologme.KeyLogs, wi int) {
 }
 
 func send_remote(wl []gologme.WindowLogs, kl []gologme.KeyLogs, wi int) {
-	client, err := rpc.DialHTTP("tcp", ":8080")
+	client, err := rpc.DialHTTP("tcp", ":10000")
 	if err != nil {
 		fmt.Printf("Error in dialing, droping logs, %s\n", err)
 		return
@@ -38,7 +38,7 @@ func send_remote(wl []gologme.WindowLogs, kl []gologme.KeyLogs, wi int) {
 		KeyLogs:          kl,
 		WindowLogsLength: wi,
 	}
-	var result gologme.Result
+	var result int
 	err = client.Call("Golog.Log", args, &result)
 	if err != nil {
 		fmt.Printf("Error in calling RPC method, droping logs, %s\n", err)

@@ -4,8 +4,6 @@ import (
 	"time"
 )
 
-type Result int
-
 type RpcArgs struct {
 	User             string
 	ApiKey           string
@@ -20,6 +18,6 @@ type WindowLogs struct {
 }
 
 type KeyLogs struct {
-	Time time.Time
-	Name string
+	Time  time.Time
+	Count int
 }
