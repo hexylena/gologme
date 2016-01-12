@@ -82,25 +82,25 @@ func main() {
 					golog,
 					c.Int("uid"),
 				)
-				if len(window_logs) > 0 {
-					WriteStringFile(
-						"window",
-						window_logs,
-						c.String("logDir"),
-					)
-				}
+                if len(window_logs) > 0 {
+                    WriteStringFile(
+                        "window",
+                        window_logs,
+                        c.String("logDir"),
+                    )
+                }
 
-				key_logs := exportKeys(
-					golog,
-					c.Int("uid"),
-				)
-				if len(key_logs) > 0 {
-					WriteIntFile(
-						"keyfreq",
-						key_logs,
-						c.String("logDir"),
-					)
-				}
+                key_logs := exportKeys(
+                    golog,
+                    c.Int("uid"),
+                )
+                if len(key_logs) > 0 {
+                    WriteIntFile(
+                        "keyfreq",
+                        key_logs,
+                        c.String("logDir"),
+                    )
+                }
 			},
 		},
 	}
