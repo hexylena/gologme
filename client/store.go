@@ -12,7 +12,9 @@ func send(wl []gologme.WindowLogs, wi int, kl []gologme.KeyLogs) {
 	//for i, e := range kl {
 	//fmt.Printf("KL: %d - %s\n", i, e)
 	//}
+    fmt.Printf("Sending %d window logs, %d key logs\n", wi, len(kl))
 	send_remote(wl, kl, wi)
+    fmt.Printf("Sent    %d window logs, %d key logs\n", wi, len(kl))
 }
 
 func send_local(wl []gologme.WindowLogs, kl []gologme.KeyLogs, wi int) {

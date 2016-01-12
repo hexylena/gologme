@@ -16,7 +16,7 @@ func findKeyboard() *keylogger.KeyLogger {
 		return nil
 	}
 	for i, val := range devs {
-		fmt.Println("Id->", val.Id, "Device->", val.Name, " kb?->", strings.Contains(val.Name, "eyboard"))
+		//fmt.Println("Id->", val.Id, "Device->", val.Name, " kb?->", strings.Contains(val.Name, "eyboard"))
 		if strings.Contains(val.Name, "eyboard") {
 			dev := devs[i]
 			return keylogger.NewKeyLogger(dev)
@@ -49,18 +49,21 @@ func logKeys(c chan *gologme.KeyLogs) {
 	}
 }
 
-func binLogKeys(c chan *gologme.KeyLogs, t chan bool) {
+func binLogKeys(c chan *gologme.KeyLogs, keyLoggingGranularity int) {
 	intermediate := make(chan *gologme.KeyLogs, 1000)
 	go logKeys(intermediate)
 
+	clock := time.Tick(time.Duration(keyLoggingGranularity) * time.Millisecond)
 	for {
-		// Each clock tick (or other tick...)
-		<-t
+		// Each clock tick
+		<-clock
 		data := logKeyList(intermediate)
-		c <- &gologme.KeyLogs{
-			Time:  data[0].Time,
-			Count: len(data),
-		}
+        if len(data) > 0 {
+            c <- &gologme.KeyLogs{
+                Time:  data[0].Time,
+                Count: len(data),
+            }
+        }
 	}
 }
 

@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func logWindows(c chan *gologme.WindowLogs) {
+func logWindows(c chan *gologme.WindowLogs, windowLogGranularity int) {
 	X, err := xgb.NewConn()
 	if err != nil {
 		//log.Fatal(err)
@@ -15,7 +15,7 @@ func logWindows(c chan *gologme.WindowLogs) {
 
 	var lastTitle string
 
-	ticker := time.Tick(2 * time.Second)
+	ticker := time.Tick(time.Duration(windowLogGranularity) * time.Millisecond)
 	for {
 		<-ticker
 

@@ -50,7 +50,7 @@ func (t *Golog) logToDb(uid int, windowlogs []gologme.WindowLogs, keylogs []golo
 			log.Fatal(err)
 		}
 		// Dunno why windowLogs comes through two too big, so whatever.
-		if i >= wll - 1 {
+		if i >= wll-1 {
 			break
 		}
 	}
@@ -140,7 +140,6 @@ func (t *Golog) setupDb(db *sql.DB) {
 	}
 	t.Db = db
 }
-
 
 func main() {
 	db, err := sql.Open("sqlite3", "file.db")

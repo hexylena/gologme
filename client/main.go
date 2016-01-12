@@ -3,32 +3,22 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/codegangsta/cli"
 	"github.com/erasche/gologme"
 )
 
-func golog(logbuffer int) {
+func golog(logbuffer int, windowLogGranularity int, keyLogGranularity int) {
 	window_titles := make(chan *gologme.WindowLogs)
 	keypresses := make(chan *gologme.KeyLogs, 1000)
-	ticks := make(chan bool, 10)
-
-	// Ticker
-	go func(t chan bool){
-		clock := time.Tick(11 * time.Second)
-		for {
-			<-clock
-			t<-true
-		}
-	}(ticks)
 
 	// Start logging
-	go logWindows(window_titles)
-	go binLogKeys(keypresses, ticks)
+	go logWindows(window_titles, windowLogGranularity)
+	go binLogKeys(keypresses, keyLogGranularity)
 
 	wl := make([]gologme.WindowLogs, logbuffer)
 	wi := 0
@@ -43,9 +33,8 @@ func golog(logbuffer int) {
 	go func() {
 		// In cleanup, we need to
 		<-exit_chan
-		// Flush binLogKeys to associated chan
-		ticks<- true
-		send(wl, wi, logKeyList(keypresses))
+		kl := logKeyList(keypresses)
+		send(wl, wi, kl)
 		os.Exit(1)
 	}()
 
@@ -58,13 +47,14 @@ func golog(logbuffer int) {
 		}
 		// and send
 		if wi == 0 && !first {
-			// Flush binLogKeys to associated chan
-			ticks<- true
-			send(wl, len(wl), logKeyList(keypresses))
+			kl := logKeyList(keypresses)
+			fmt.Printf(". %s\n", kl)
+			send(wl, len(wl), kl)
 		}
 
 		//Stick in next log position
 		wl[wi] = *(<-window_titles)
+		fmt.Printf("[%d] %s\n", wi, wl[wi])
 		wi++
 	}
 }
@@ -79,10 +69,24 @@ func main() {
 			Value: 32,
 			Usage: "size of buffer before sending logs",
 		},
+		cli.IntFlag{
+			Name: "windowLogGranularity",
+			Value: 2000,
+			Usage: "How often to poll window title in ms",
+		},
+		cli.IntFlag{
+			Name: "keyLogGranularity",
+			Value: 2000,
+			Usage: "How often to aggregate caught keypresses in ms",
+		},
 	}
 
 	app.Action = func(c *cli.Context) {
-		golog(c.Int("buffSize"))
+		golog(
+			c.Int("buffSize"),
+			c.Int("windowLogGranularity"),
+			c.Int("keyLogGranularity"),
+		)
 	}
 	app.Run(os.Args)
 }
