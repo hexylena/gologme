@@ -10,18 +10,23 @@ And mostly I want to practice go more :)
 
 ## Goals
 
-- Feature parity with ulogme
-- Android client
-- multi-user support (Why? Who knows. Seems easy to tack on)
+- [ ] Feature parity with ulogme
+    - [x] Window Logging
+    - [x] Key Logging
+    - [ ] Notes
+    - [ ] Blog
+    - [ ] lockscreen detection
+    - [ ] cross platform logging
+      - https://github.com/kavu/AyeAye/ maybe
+      - PRs welcome since I don't have a mac.
+- [x] Ulogme import/export
+- [ ] Android client
+- [x] multi-user support (Why? Who knows. Seems easy to tack on)
 
 ## TODO
 
 - [ ] TLS for server-connection [https://github.com/valyala/gorpc](valyala/gorpc)
 - [ ] standalone mode
-- [ ] lockscreen detection
-- [ ] cross platform logging
-  - https://github.com/kavu/AyeAye/ maybe
-  - PRs welcome since I don't have a mac.
 
 ## LICENSE
 
