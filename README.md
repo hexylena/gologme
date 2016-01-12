@@ -24,11 +24,12 @@ And mostly I want to practice go more :)
 - [x] Ulogme import/export. Near perfect roundtripping
 - [ ] Android client
 - [x] multi-user support (Why? Who knows. Seems easy to tack on)
+- [x] standalone mode
 
 ## TODO
 
 - [ ] TLS for server-connection [https://github.com/valyala/gorpc](valyala/gorpc)
-- [ ] standalone mode
+- [ ] Sexy angularjs website
 
 ## LICENSE
 

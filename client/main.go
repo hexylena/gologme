@@ -11,7 +11,7 @@ import (
 	"github.com/erasche/gologme"
 )
 
-func golog(logbuffer int, windowLogGranularity int, keyLogGranularity int) {
+func golog(logbuffer int, windowLogGranularity int, keyLogGranularity int, standalone bool) {
 	window_titles := make(chan *gologme.WindowLogs)
 	keypresses := make(chan *gologme.KeyLogs, 1000)
 
@@ -33,7 +33,7 @@ func golog(logbuffer int, windowLogGranularity int, keyLogGranularity int) {
 		// In cleanup, we need to
 		<-exit_chan
 		kl := logKeyList(keypresses)
-		send(wl, wi, kl)
+		send(wl, wi, kl, standalone)
 		os.Exit(1)
 	}()
 
@@ -47,7 +47,7 @@ func golog(logbuffer int, windowLogGranularity int, keyLogGranularity int) {
 		// and send
 		if wi == 0 && !first {
 			kl := logKeyList(keypresses)
-			send(wl, len(wl), kl)
+			send(wl, len(wl), kl, standalone)
 		}
 
 		//Stick in next log position
@@ -76,6 +76,10 @@ func main() {
 			Value: 2000,
 			Usage: "How often to aggregate caught keypresses in ms",
 		},
+		cli.BoolFlag{
+			Name:  "standalone",
+			Usage: "Run in non-networked, standalone mode",
+		},
 	}
 
 	app.Action = func(c *cli.Context) {
@@ -83,6 +87,7 @@ func main() {
 			c.Int("buffSize"),
 			c.Int("windowLogGranularity"),
 			c.Int("keyLogGranularity"),
+			c.Bool("standalone"),
 		)
 	}
 	app.Run(os.Args)

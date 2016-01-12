@@ -1,13 +1,39 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/erasche/gologme"
+	_ "github.com/mattn/go-sqlite3"
+	"log"
 	"net/rpc"
+	"os/user"
+	"path"
 )
 
-func send(wl []gologme.WindowLogs, wi int, kl []gologme.KeyLogs) {
-	send_remote(wl, kl, wi)
+func send(wl []gologme.WindowLogs, wi int, kl []gologme.KeyLogs, standalone bool) {
+	if standalone {
+		send_local(wl, kl, wi)
+	} else {
+		send_remote(wl, kl, wi)
+	}
+}
+
+func send_local(wl []gologme.WindowLogs, kl []gologme.KeyLogs, wi int) {
+	user, err := user.Current()
+	if err != nil {
+		log.Fatal(err)
+
+	}
+	db, err := sql.Open("sqlite3", path.Join(user.HomeDir, ".gologme.db"))
+	// TODO: Ensure admin user?
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+	golog := new(gologme.Golog)
+	golog.SetupDb(db)
+	golog.LogToDb(1, wl, kl, wi)
 }
 
 func send_remote(wl []gologme.WindowLogs, kl []gologme.KeyLogs, wi int) {
