@@ -1,6 +1,6 @@
 # gologme
 
-Ulogme is awesomesauce, but there are some not so great things. Namely
+[Ulogme](https://github.com/karpathy/ulogme) is awesomesauce, but there are some not so great things. Namely
 that I have to set it up on a bunch of computers and it requires multiple
 tools running in the background and they don't always exit as cleanly as
 they should. That and I can't compile logs in a single place. This is even
@@ -28,8 +28,11 @@ And mostly I want to practice go more :)
 
 ## TODO
 
-- [ ] TLS for server-connection [https://github.com/valyala/gorpc](valyala/gorpc)
+- [ ] TLS for server-connection [valyala/gorpc](https://github.com/valyala/gorpc)
 - [ ] Sexy angularjs website
+- [ ] docker image, since standalone mode + /dev/input mounts are really all that's required
+- [ ] AF_UNIX instead of lo internet socket?
+- [ ] ensure network connections are closed promptly
 
 ## LICENSE
 
