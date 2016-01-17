@@ -2,6 +2,7 @@ package gologme
 
 import (
 	"database/sql"
+	//"fmt"
 	"log"
 	"time"
 	//"github.com/erasche/gologme/ulogme"
@@ -190,12 +191,86 @@ func (t *Golog) exportKeyLogsByRange(t0 int64, t1 int64) []*IEvent {
 	return logs
 }
 
+func (t *Golog) exportBlog(t0 int64, t1 int64) []*SEvent {
+	stmt, err := t.Db.Prepare("select time, type, contents from notes where time >= ? and time < ? and type = ? order by id")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(t0, t1, BLOG_TYPE)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	logs := make([]*SEvent, 0)
+	for rows.Next() {
+		var (
+			Time     int
+			Type     int
+			Contents string
+		)
+		rows.Scan(&Time, &Type, &Contents)
+		logs = append(
+			logs,
+			&SEvent{
+				T: Time,
+				S: Contents,
+			},
+		)
+	}
+	return logs
+}
+
+func (t *Golog) exportNotes(t0 int64, t1 int64) []*SEvent {
+	stmt, err := t.Db.Prepare("select time, type, contents from notes where time >= ? and time < ? and type = ? order by id")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(t0, t1, NOTE_TYPE)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	logs := make([]*SEvent, 0)
+	for rows.Next() {
+		var (
+			Time     int
+			Type     int
+			Contents string
+		)
+		rows.Scan(&Time, &Type, &Contents)
+		logs = append(
+			logs,
+			&SEvent{
+				T: Time,
+				S: Contents,
+			},
+		)
+	}
+	return logs
+}
+
 func (t *Golog) ExportEventsByDate(tm time.Time) *EventLog {
 	t0 := Ulogme7amTime(tm)
 	t1 := Ulogme7amTime(Tomorrow(tm))
 
+	blog := t.exportBlog(t0, t1)
+	var blogstr string
+	if len(blog) > 0 {
+		blogstr = blog[0].S
+	} else {
+		blogstr = ""
+	}
+
 	return &EventLog{
 		Window_events:  t.exportWindowLogsByRange(t0, t1),
 		Keyfreq_events: t.exportKeyLogsByRange(t0, t1),
+		Note_events:    t.exportNotes(t0, t1),
+		Blog:           blogstr,
 	}
 }
