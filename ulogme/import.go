@@ -2,14 +2,14 @@ package main
 
 import (
 	"bufio"
-	"github.com/erasche/gologme"
+	gologme "github.com/erasche/gologme/util"
 	"log"
 	"os"
 	"path/filepath"
 	"strconv"
 )
 
-func importKeys(t *Golog, uid int, logDir string) {
+func importKeys(t *gologme.Golog, uid int, logDir string) {
 	tx, err := t.Db.Begin()
 	if err != nil {
 		log.Fatal(err)
@@ -47,7 +47,7 @@ func importKeys(t *Golog, uid int, logDir string) {
 	tx.Commit()
 }
 
-func importWindows(t *Golog, uid int, logDir string) {
+func importWindows(t *gologme.Golog, uid int, logDir string) {
 	tx, err := t.Db.Begin()
 	if err != nil {
 		log.Fatal(err)
@@ -87,7 +87,7 @@ func importWindows(t *Golog, uid int, logDir string) {
 	tx.Commit()
 }
 
-func importNotes(t *Golog, uid int, logDir string) {
+func importNotes(t *gologme.Golog, uid int, logDir string) {
 	tx, err := t.Db.Begin()
 	if err != nil {
 		log.Fatal(err)
@@ -122,7 +122,7 @@ func importNotes(t *Golog, uid int, logDir string) {
 	tx.Commit()
 }
 
-func importBlogs(t *Golog, uid int, logDir string) {
+func importBlogs(t *gologme.Golog, uid int, logDir string) {
 	tx, err := t.Db.Begin()
 	if err != nil {
 		log.Fatal(err)

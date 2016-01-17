@@ -1,11 +1,12 @@
 package main
 
 import (
+	gologme "github.com/erasche/gologme/util"
 	"log"
 	"time"
 )
 
-func exportNotes(t *Golog, uid int) []NoteLog {
+func exportNotes(t *gologme.Golog, uid int) []gologme.NoteEvent {
 	stmt, err := t.Db.Prepare("select time, type, contents from notes where uid = ?")
 	if err != nil {
 		log.Fatal(err)
@@ -18,7 +19,7 @@ func exportNotes(t *Golog, uid int) []NoteLog {
 	}
 	defer rows.Close()
 
-	logs := make([]NoteLog, 0)
+	logs := make([]gologme.NoteEvent, 0)
 	for rows.Next() {
 		var (
 			ltime int64
@@ -28,7 +29,7 @@ func exportNotes(t *Golog, uid int) []NoteLog {
 
 		rows.Scan(&ltime, &ntype, &name)
 		realTime := time.Unix(ltime, 0)
-		logs = append(logs, NoteLog{
+		logs = append(logs, gologme.NoteEvent{
 			RealTime: realTime,
 			Type:     ntype,
 			Contents: name,
@@ -37,7 +38,7 @@ func exportNotes(t *Golog, uid int) []NoteLog {
 	return logs
 }
 
-func exportWindows(t *Golog, uid int) []StringLog {
+func exportWindows(t *gologme.Golog, uid int) []gologme.SEventT {
 	stmt, err := t.Db.Prepare("select time, name from windowLogs where uid = ?")
 	if err != nil {
 		log.Fatal(err)
@@ -50,7 +51,7 @@ func exportWindows(t *Golog, uid int) []StringLog {
 	}
 	defer rows.Close()
 
-	logs := make([]StringLog, 0)
+	logs := make([]gologme.SEventT, 0)
 	for rows.Next() {
 		var (
 			ltime int64
@@ -59,7 +60,7 @@ func exportWindows(t *Golog, uid int) []StringLog {
 
 		rows.Scan(&ltime, &name)
 		realTime := time.Unix(ltime, 0)
-		logs = append(logs, StringLog{
+		logs = append(logs, gologme.SEventT{
 			RealTime: realTime,
 			Title:    name,
 		})
@@ -67,7 +68,7 @@ func exportWindows(t *Golog, uid int) []StringLog {
 	return logs
 }
 
-func exportKeys(t *Golog, uid int) []IntLog {
+func exportKeys(t *gologme.Golog, uid int) []gologme.IEventT {
 	stmt, err := t.Db.Prepare("select time, count from keyLogs where uid = ?")
 	if err != nil {
 		log.Fatal(err)
@@ -80,7 +81,7 @@ func exportKeys(t *Golog, uid int) []IntLog {
 	}
 	defer rows.Close()
 
-	logs := make([]IntLog, 0)
+	logs := make([]gologme.IEventT, 0)
 	for rows.Next() {
 		var (
 			ltime int64
@@ -89,7 +90,7 @@ func exportKeys(t *Golog, uid int) []IntLog {
 
 		rows.Scan(&ltime, &count)
 		realTime := time.Unix(ltime, 0)
-		logs = append(logs, IntLog{
+		logs = append(logs, gologme.IEventT{
 			RealTime: realTime,
 			Count:    count,
 		})

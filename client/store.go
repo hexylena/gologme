@@ -3,7 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"github.com/erasche/gologme"
+	gologme "github.com/erasche/gologme/util"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"net/rpc"

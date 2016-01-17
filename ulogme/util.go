@@ -1,36 +1,13 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
-	"github.com/erasche/gologme"
-	_ "github.com/mattn/go-sqlite3"
+	gologme "github.com/erasche/gologme/util"
 	"log"
 	"os"
-	"time"
 )
 
-type Golog struct {
-	Db *sql.DB
-}
-
-type StringLog struct {
-	RealTime time.Time
-	Title    string
-}
-
-type IntLog struct {
-	RealTime time.Time
-	Count    int
-}
-
-type NoteLog struct {
-	RealTime time.Time
-	Type     int
-	Contents string
-}
-
-func WriteNotes(notes []NoteLog, dir string) {
+func WriteNotes(notes []gologme.NoteEvent, dir string) {
 	err := os.MkdirAll(dir, 0777)
 	if err != nil {
 		log.Fatal(err)
@@ -41,7 +18,7 @@ func WriteNotes(notes []NoteLog, dir string) {
 		init         bool = false
 	)
 	for _, note := range notes {
-		ult := Ulogme7amTime(note.RealTime)
+		ult := gologme.Ulogme7amTime(note.RealTime)
 		if !init || ult != lastUlogTime {
 			_ = f.Close()
 			var fn string
@@ -67,7 +44,7 @@ func WriteNotes(notes []NoteLog, dir string) {
 	}
 }
 
-func WriteIntFile(category string, windows []IntLog, dir string) {
+func WriteIntFile(category string, windows []gologme.IEventT, dir string) {
 	err := os.MkdirAll(dir, 0777)
 	if err != nil {
 		log.Fatal(err)
@@ -79,7 +56,7 @@ func WriteIntFile(category string, windows []IntLog, dir string) {
 	)
 
 	for _, wl := range windows {
-		ult := Ulogme7amTime(wl.RealTime)
+		ult := gologme.Ulogme7amTime(wl.RealTime)
 		if !init || ult != lastUlogTime {
 			_ = f.Close()
 			fn := fmt.Sprintf("%s/%s_%d.txt", dir, category, ult)
@@ -95,7 +72,7 @@ func WriteIntFile(category string, windows []IntLog, dir string) {
 	}
 }
 
-func WriteStringFile(category string, windows []StringLog, dir string) {
+func WriteStringFile(category string, windows []gologme.SEventT, dir string) {
 	err := os.MkdirAll(dir, 0777)
 	if err != nil {
 		log.Fatal(err)
@@ -107,7 +84,7 @@ func WriteStringFile(category string, windows []StringLog, dir string) {
 	)
 
 	for _, wl := range windows {
-		ult := Ulogme7amTime(wl.RealTime)
+		ult := gologme.Ulogme7amTime(wl.RealTime)
 		if !init || ult != lastUlogTime {
 			_ = f.Close()
 			fn := fmt.Sprintf("%s/%s_%d.txt", dir, category, ult)
@@ -121,18 +98,4 @@ func WriteStringFile(category string, windows []StringLog, dir string) {
 		}
 		f.WriteString(fmt.Sprintf("%d %s\n", wl.RealTime.Unix(), wl.Title))
 	}
-}
-
-func Ulogme7amTime(t time.Time) int64 {
-	// TODO: check timezones
-	location, err := time.LoadLocation("America/Chicago")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	am7 := time.Date(t.Year(), t.Month(), t.Day(), 7, 0, 0, 0, location)
-	if t.Hour() < 7 {
-		am7 = am7.AddDate(0, 0, -1)
-	}
-	return am7.Unix()
 }

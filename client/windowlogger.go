@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/BurntSushi/xgb"
 	"github.com/BurntSushi/xgb/xproto"
-	"github.com/erasche/gologme"
+	gologme "github.com/erasche/gologme/util"
 	"os/exec"
 	"strings"
 	"time"

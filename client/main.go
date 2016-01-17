@@ -8,7 +8,7 @@ import (
 	"syscall"
 
 	"github.com/codegangsta/cli"
-	"github.com/erasche/gologme"
+	gologme "github.com/erasche/gologme/util"
 )
 
 func golog(logbuffer int, windowLogGranularity int, keyLogGranularity int, standalone bool) {
@@ -58,7 +58,7 @@ func golog(logbuffer int, windowLogGranularity int, keyLogGranularity int, stand
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "ulogme"
+	app.Name = "gologme"
 	app.Usage = "local logging client"
 	app.Flags = []cli.Flag{
 		cli.IntFlag{

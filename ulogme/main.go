@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"github.com/codegangsta/cli"
+	gologme "github.com/erasche/gologme/util"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"os"
@@ -14,7 +15,7 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.Close()
-	golog := new(Golog)
+	golog := new(gologme.Golog)
 	golog.Db = db
 
 	app := cli.NewApp()

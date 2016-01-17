@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/MarinX/keylogger"
-	"github.com/erasche/gologme"
+	gologme "github.com/erasche/gologme/util"
 	"log"
 	"strings"
 	"time"
