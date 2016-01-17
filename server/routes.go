@@ -17,15 +17,15 @@ type Route struct {
 type Routes []Route
 
 var routes = Routes{
-	Route{"Index", "GET", "/", Index},
 	Route{"Events", "GET", "/api/events/{date:[0-9]+}", Events},
 }
+
 
 func RegisterRoutes(router *mux.Router) *mux.Router {
 	for _, route := range routes {
 		router.Methods(route.Method).Path(route.Pattern).Name(route.Name).Handler(route.HandlerFunc)
 	}
-	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static")))
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./server/static")))
 	return router
 }
 

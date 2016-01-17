@@ -2,7 +2,7 @@ package gologme
 
 import (
 	"database/sql"
-	//"fmt"
+    //"fmt"
 	"log"
 	"time"
 	//"github.com/erasche/gologme/ulogme"
