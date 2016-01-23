@@ -401,23 +401,23 @@ func AssetNames() []string {
 
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() (*asset, error){
-	"static/css/index_style.css": staticCssIndex_styleCss,
-	"static/css/overview_style.css": staticCssOverview_styleCss,
-	"static/export_list.json": staticExport_listJson,
-	"static/index.html": staticIndexHtml,
-	"static/js/d3.min.js": staticJsD3MinJs,
-	"static/js/d3utils.js": staticJsD3utilsJs,
-	"static/js/jquery-1.8.3.min.js": staticJsJquery183MinJs,
-	"static/js/overview.js": staticJsOverviewJs,
-	"static/js/render_settings.js": staticJsRender_settingsJs,
+	"static/css/index_style.css":           staticCssIndex_styleCss,
+	"static/css/overview_style.css":        staticCssOverview_styleCss,
+	"static/export_list.json":              staticExport_listJson,
+	"static/index.html":                    staticIndexHtml,
+	"static/js/d3.min.js":                  staticJsD3MinJs,
+	"static/js/d3utils.js":                 staticJsD3utilsJs,
+	"static/js/jquery-1.8.3.min.js":        staticJsJquery183MinJs,
+	"static/js/overview.js":                staticJsOverviewJs,
+	"static/js/render_settings.js":         staticJsRender_settingsJs,
 	"static/js/render_settings_example.js": staticJsRender_settings_exampleJs,
-	"static/js/render_utils.js": staticJsRender_utilsJs,
-	"static/js/spin.min.js": staticJsSpinMinJs,
-	"static/js/ulogme.js": staticJsUlogmeJs,
-	"static/js/ulogme_common.js": staticJsUlogme_commonJs,
-	"static/js/underscore.min.js": staticJsUnderscoreMinJs,
-	"static/overview.html": staticOverviewHtml,
-	"static/rules.json": staticRulesJson,
+	"static/js/render_utils.js":            staticJsRender_utilsJs,
+	"static/js/spin.min.js":                staticJsSpinMinJs,
+	"static/js/ulogme.js":                  staticJsUlogmeJs,
+	"static/js/ulogme_common.js":           staticJsUlogme_commonJs,
+	"static/js/underscore.min.js":          staticJsUnderscoreMinJs,
+	"static/overview.html":                 staticOverviewHtml,
+	"static/rules.json":                    staticRulesJson,
 }
 
 // AssetDir returns the file names below a certain
@@ -459,29 +459,30 @@ type bintree struct {
 	Func     func() (*asset, error)
 	Children map[string]*bintree
 }
+
 var _bintree = &bintree{nil, map[string]*bintree{
 	"static": &bintree{nil, map[string]*bintree{
 		"css": &bintree{nil, map[string]*bintree{
-			"index_style.css": &bintree{staticCssIndex_styleCss, map[string]*bintree{}},
+			"index_style.css":    &bintree{staticCssIndex_styleCss, map[string]*bintree{}},
 			"overview_style.css": &bintree{staticCssOverview_styleCss, map[string]*bintree{}},
 		}},
 		"export_list.json": &bintree{staticExport_listJson, map[string]*bintree{}},
-		"index.html": &bintree{staticIndexHtml, map[string]*bintree{}},
+		"index.html":       &bintree{staticIndexHtml, map[string]*bintree{}},
 		"js": &bintree{nil, map[string]*bintree{
-			"d3.min.js": &bintree{staticJsD3MinJs, map[string]*bintree{}},
-			"d3utils.js": &bintree{staticJsD3utilsJs, map[string]*bintree{}},
-			"jquery-1.8.3.min.js": &bintree{staticJsJquery183MinJs, map[string]*bintree{}},
-			"overview.js": &bintree{staticJsOverviewJs, map[string]*bintree{}},
-			"render_settings.js": &bintree{staticJsRender_settingsJs, map[string]*bintree{}},
+			"d3.min.js":                  &bintree{staticJsD3MinJs, map[string]*bintree{}},
+			"d3utils.js":                 &bintree{staticJsD3utilsJs, map[string]*bintree{}},
+			"jquery-1.8.3.min.js":        &bintree{staticJsJquery183MinJs, map[string]*bintree{}},
+			"overview.js":                &bintree{staticJsOverviewJs, map[string]*bintree{}},
+			"render_settings.js":         &bintree{staticJsRender_settingsJs, map[string]*bintree{}},
 			"render_settings_example.js": &bintree{staticJsRender_settings_exampleJs, map[string]*bintree{}},
-			"render_utils.js": &bintree{staticJsRender_utilsJs, map[string]*bintree{}},
-			"spin.min.js": &bintree{staticJsSpinMinJs, map[string]*bintree{}},
-			"ulogme.js": &bintree{staticJsUlogmeJs, map[string]*bintree{}},
-			"ulogme_common.js": &bintree{staticJsUlogme_commonJs, map[string]*bintree{}},
-			"underscore.min.js": &bintree{staticJsUnderscoreMinJs, map[string]*bintree{}},
+			"render_utils.js":            &bintree{staticJsRender_utilsJs, map[string]*bintree{}},
+			"spin.min.js":                &bintree{staticJsSpinMinJs, map[string]*bintree{}},
+			"ulogme.js":                  &bintree{staticJsUlogmeJs, map[string]*bintree{}},
+			"ulogme_common.js":           &bintree{staticJsUlogme_commonJs, map[string]*bintree{}},
+			"underscore.min.js":          &bintree{staticJsUnderscoreMinJs, map[string]*bintree{}},
 		}},
 		"overview.html": &bintree{staticOverviewHtml, map[string]*bintree{}},
-		"rules.json": &bintree{staticRulesJson, map[string]*bintree{}},
+		"rules.json":    &bintree{staticRulesJson, map[string]*bintree{}},
 	}},
 }}
 
@@ -531,4 +532,3 @@ func _filePath(dir, name string) string {
 	cannonicalName := strings.Replace(name, "\\", "/", -1)
 	return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
 }
-

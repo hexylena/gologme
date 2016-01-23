@@ -20,7 +20,6 @@ var routes = Routes{
 	Route{"Events", "GET", "/api/events/{date:[0-9]+}", Events},
 }
 
-
 func RegisterRoutes(router *mux.Router) *mux.Router {
 	for _, route := range routes {
 		router.Methods(route.Method).Path(route.Pattern).Name(route.Name).Handler(route.HandlerFunc)

@@ -25,8 +25,8 @@ func send_local(wl []gologme.WindowLogs, kl []gologme.KeyLogs, wi int) {
 		log.Fatal(err)
 
 	}
-    fn := path.Join(user.HomeDir, ".gologme.db")
-    fmt.Printf("Storing to %s\n", fn)
+	fn := path.Join(user.HomeDir, ".gologme.db")
+	fmt.Printf("Storing to %s\n", fn)
 	db, err := sql.Open("sqlite3", fn)
 	// TODO: Ensure admin user?
 	if err != nil {
