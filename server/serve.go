@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"database/sql"
@@ -12,12 +12,7 @@ import (
 
 var golog *gologme.Golog
 
-func main() {
-	db, err := sql.Open("sqlite3", "file.db")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
+func ServeFromDb(db *sql.DB, url string){
 	golog = new(gologme.Golog)
 	golog.SetupDb(db)
 
@@ -28,5 +23,14 @@ func main() {
 	RegisterRoutes(router)
 
 	fmt.Println("Listening...")
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(http.ListenAndServe(url, router))
+}
+
+func ServeFromPath(dbPath string, url string){
+	db, err := sql.Open("sqlite3", dbPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+	go ServeFromDb(db, url)
 }

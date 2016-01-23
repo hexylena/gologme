@@ -1,4 +1,4 @@
-package main
+package client
 
 import (
 	"os"
@@ -8,7 +8,7 @@ import (
 	gologme "github.com/erasche/gologme/util"
 )
 
-func golog(logbuffer int, windowLogGranularity int, keyLogGranularity int, standalone bool) {
+func Golog(logbuffer int, windowLogGranularity int, keyLogGranularity int, standalone bool) {
 	window_titles := make(chan *gologme.WindowLogs)
 	keypresses := make(chan *gologme.KeyLogs, 1000)
 

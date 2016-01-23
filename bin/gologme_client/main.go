@@ -2,14 +2,24 @@ package main
 
 import (
 	"os"
-
+	"os/user"
+	"path"
 	"github.com/codegangsta/cli"
+    "github.com/erasche/gologme/client"
 )
 
 func main() {
 	app := cli.NewApp()
 	app.Name = "gologme"
 	app.Usage = "local logging client"
+    user, err := user.Current()
+    var dbPath string;
+    if err != nil {
+        dbPath = path.Join(user.HomeDir, ".gologme.db")
+    } else {
+        dbPath = "~/.gologme.db"
+    }
+
 	app.Flags = []cli.Flag{
 		cli.IntFlag{
 			Name:  "buffSize",
@@ -30,15 +40,28 @@ func main() {
 			Name:  "standalone",
 			Usage: "Run in non-networked, standalone mode",
 		},
+        cli.StringFlag{
+            Name: "dbPath",
+            Usage: "Path to the database",
+            Value: dbPath,
+        },
 	}
 
 	app.Action = func(c *cli.Context) {
-		golog(
+		if c.Bool("standalone") {
+			go client.Serve(
+                dbPath,
+				":8080",
+			)
+		}
+
+        client.Golog(
 			c.Int("buffSize"),
 			c.Int("windowLogGranularity"),
 			c.Int("keyLogGranularity"),
 			c.Bool("standalone"),
 		)
+
 	}
 	app.Run(os.Args)
 }

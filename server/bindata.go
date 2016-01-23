@@ -19,7 +19,7 @@
 // static/rules.json
 // DO NOT EDIT!
 
-package main
+package server
 
 import (
 	"fmt"
