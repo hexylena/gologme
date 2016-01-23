@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/erasche/gologme/server"
 	_ "github.com/mattn/go-sqlite3"
-    "github.com/erasche/gologme/server"
 )
 
 func main() {

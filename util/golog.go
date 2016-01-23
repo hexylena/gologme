@@ -13,45 +13,11 @@ type Golog struct {
 }
 
 func (t *Golog) LogToDb(uid int, windowlogs []WindowLogs, keylogs []KeyLogs, wll int) {
-	tx, err := t.Db.Begin()
-	if err != nil {
-		log.Fatal(err)
-	}
-	wl_stmt, err := tx.Prepare("insert into windowLogs (uid, time, name) values (?, ?, ?)")
-	if err != nil {
-		log.Fatal(err)
-	}
-	kl_stmt, err := tx.Prepare("insert into keyLogs (uid, time, count) values (?, ?, ?)")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer wl_stmt.Close()
-	defer kl_stmt.Close()
-
-	log.Printf("%d window logs %d key logs from [%d]\n", wll, len(keylogs), uid)
-
-	for _, w := range keylogs {
-		_, err = kl_stmt.Exec(uid, w.Time.Unix(), w.Count)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-
-	for i, w := range windowlogs {
-		_, err = wl_stmt.Exec(uid, w.Time.Unix(), w.Name)
-		if err != nil {
-			log.Fatal(err)
-		}
-		// Dunno why windowLogs comes through two too big, so whatever.
-		if i >= wll-1 {
-			break
-		}
-	}
-
-	tx.Commit()
+	// TODO
 }
 
 func (t *Golog) ensureAuth(user string, key string) (int, error) {
+	// TODO
 	// Pretty assuredly not safe from timing attacks.
 	stmt, err := t.Db.Prepare("select id from users where username = ? and api_key = ?")
 	if err != nil {

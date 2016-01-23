@@ -12,7 +12,7 @@ import (
 
 var golog *gologme.Golog
 
-func ServeFromDb(db *sql.DB, url string){
+func ServeFromDb(db *sql.DB, url string) {
 	golog = new(gologme.Golog)
 	golog.SetupDb(db)
 
@@ -26,7 +26,7 @@ func ServeFromDb(db *sql.DB, url string){
 	log.Fatal(http.ListenAndServe(url, router))
 }
 
-func ServeFromPath(dbPath string, url string){
+func ServeFromPath(dbPath string, url string) {
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
 		log.Fatal(err)

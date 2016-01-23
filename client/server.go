@@ -1,9 +1,9 @@
 package client
 
 import (
-    "github.com/erasche/gologme/server"
+	"github.com/erasche/gologme/server"
 )
 
 func Serve(path string, listenAddr string) {
-    server.ServeFromPath(path, listenAddr)
+	server.ServeFromPath(path, listenAddr)
 }

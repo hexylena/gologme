@@ -52,4 +52,3 @@ func Golog(logbuffer int, windowLogGranularity int, keyLogGranularity int, stand
 		wi++
 	}
 }
-
