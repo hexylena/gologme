@@ -43,7 +43,7 @@ func Register(name string, factory DataStoreFactory) {
 
 func init() {
 	Register("postgres", NewPostgreSQLDataStore)
-	Register("memory", NewMemoryDataStore)
+	Register("sqlite", NewSqliteSQLDataStore)
 }
 
 func CreateDataStore(conf map[string]string) (DataStore, error) {
@@ -73,7 +73,7 @@ func CreateDataStore(conf map[string]string) (DataStore, error) {
 func main() {
 	datastore, err := CreateDataStore(map[string]string{
 		"DATASTORE": "memory",
-		//"DATASTORE_POSTGRES_DSN": "dbname=factoriesareamazing",
+        //"DATASTORE_POSTGRES_DSN": "dbname=factoriesareamazing",
 	})
 	if err != nil {
 		log.Fatal(err)
