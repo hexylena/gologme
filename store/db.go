@@ -71,5 +71,12 @@ func CreateDataStore(conf map[string]string) (DataStore, error) {
 	}
 
 	// Run the factory with the configuration.
-	return engineFactory(conf)
+	ef, err := engineFactory(conf)
+	if err != nil {
+		log.Fatal(err)
+	}
+	println(ef.DB)
+	println(err)
+	ef.SetupDb()
+	return ef, err
 }

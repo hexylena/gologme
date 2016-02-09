@@ -39,10 +39,6 @@ func (t *Golog) Log(args gologme_types.RpcArgs) int {
 	return 0
 }
 
-func (t *Golog) SetupDb() {
-	t.DS.SetupDb()
-}
-
 func NewGolog(fn string) *Golog {
 	if len(fn) == 0 {
 		user, err := user.Current()

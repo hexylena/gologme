@@ -224,6 +224,7 @@ func (ds *SqliteSQLDataStore) exportNotes(t0 int64, t1 int64) []*gologme.SEvent 
 }
 
 func (ds *SqliteSQLDataStore) ExportEventsByDate(tm time.Time) *gologme.EventLog {
+	println(tm.Unix())
 	t0 := Ulogme7amTime(tm)
 	t1 := Ulogme7amTime(Tomorrow(tm))
 

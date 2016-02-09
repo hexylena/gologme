@@ -35,7 +35,6 @@ func send_local(wl []gologme.WindowLogs, kl []gologme.KeyLogs, wi int) {
 	}
 	defer db.Close()
 	golog := gologme_util.NewGolog("")
-	golog.SetupDb()
 	golog.LogToDb(1, wl, kl, wi)
 }
 
