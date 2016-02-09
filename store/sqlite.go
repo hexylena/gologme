@@ -75,10 +75,9 @@ func (ds *SqliteSQLDataStore) Name() string {
 	return "SqliteSQLDataStore"
 }
 
-func (ds *SqliteSQLDataStore) FindUserNameById(id int64) (string, error) {
+func (ds *SqliteSQLDataStore) FindUserNameById(id int) (string, error) {
 	var username string
-	res, err := ds.DB.Query("SELECT username FROM users WHERE id=$1", id)
-	res.Scan(&username)
+	err := ds.DB.QueryRow("SELECT username FROM users WHERE id = ?", id).Scan(&username)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return "", UserNotFoundError
@@ -89,12 +88,14 @@ func (ds *SqliteSQLDataStore) FindUserNameById(id int64) (string, error) {
 }
 
 func NewSqliteSQLDataStore(conf map[string]string) (DataStore, error) {
-	var dsn string
-	if dsn, ok := conf["DATASTORE_PATH"]; !ok {
+    var dsn string
+	if val, ok := conf["DATASTORE_PATH"]; ok {
+		dsn = val
+    } else {
 		return nil, errors.New(fmt.Sprintf("%s is required for the sqlite datastore", "DATASTORE_PATH"))
 	}
 
-	db, err := sql.Open("postgres", dsn)
+	db, err := sql.Open("sqlite3", dsn)
 	if err != nil {
 		log.Panicf("Failed to connect to datastore: %s", err.Error())
 		return nil, FailedToConnect

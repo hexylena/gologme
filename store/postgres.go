@@ -76,7 +76,7 @@ func (pds *PostgreSQLDataStore) Name() string {
 	return "PostgreSQLDataStore"
 }
 
-func (pds *PostgreSQLDataStore) FindUserNameById(id int64) (string, error) {
+func (pds *PostgreSQLDataStore) FindUserNameById(id int) (string, error) {
 	var username string
 	res, err := pds.DB.Query("SELECT username FROM users WHERE id=$1", id)
 	res.Scan(&username)

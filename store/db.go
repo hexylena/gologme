@@ -7,6 +7,8 @@ import (
 	"github.com/erasche/gologme/util"
 	"log"
 	"strings"
+	"os/user"
+	"path"
 )
 
 var UserNotFoundError = errors.New("User not found")
@@ -24,6 +26,7 @@ type DataStore interface {
 		key string,
 	) (int, error)
 	Name() string
+    FindUserNameById(id int) (string, error)
 }
 
 type DataStoreFactory func(conf map[string]string) (DataStore, error)
@@ -43,7 +46,7 @@ func Register(name string, factory DataStoreFactory) {
 
 func init() {
 	Register("postgres", NewPostgreSQLDataStore)
-	Register("sqlite", NewSqliteSQLDataStore)
+	Register("sqlite3", NewSqliteSQLDataStore)
 }
 
 func CreateDataStore(conf map[string]string) (DataStore, error) {
@@ -52,7 +55,7 @@ func CreateDataStore(conf map[string]string) (DataStore, error) {
 	if val, ok := conf["DATASTORE"]; ok {
 		engineName = val
 	} else {
-		engineName = "memory"
+		engineName = "sqlite3"
 	}
 
 	engineFactory, ok := datastoreFactories[engineName]
@@ -70,12 +73,18 @@ func CreateDataStore(conf map[string]string) (DataStore, error) {
 	return engineFactory(conf)
 }
 
-func main() {
-	datastore, err := CreateDataStore(map[string]string{
-		"DATASTORE": "memory",
-        //"DATASTORE_POSTGRES_DSN": "dbname=factoriesareamazing",
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-}
+//func main() {
+	//user, err := user.Current()
+	//if err != nil {
+		//log.Fatal(err)
+	//}
+	//fn := path.Join(user.HomeDir, ".gologme.db")
+
+	//datastore, err := CreateDataStore(map[string]string{
+		//"DATASTORE": "sqlite3",
+        //"DATASTORE_PATH": fn,
+	//})
+	//if err != nil {
+		//log.Fatal(err)
+	//}
+//}
