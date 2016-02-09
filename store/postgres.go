@@ -4,11 +4,11 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-    "time"
+	gologme "github.com/erasche/gologme/types"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-    gologme "github.com/erasche/gologme/types"
 	"log"
+	"time"
 )
 
 //The first implementation.
@@ -98,7 +98,7 @@ func (pds *PostgreSQLDataStore) FindUserNameById(id int) (string, error) {
 }
 
 func (pds *PostgreSQLDataStore) ExportEventsByDate(tm time.Time) *gologme.EventLog {
-    return nil
+	return nil
 }
 
 func NewPostgreSQLDataStore(conf map[string]string) (DataStore, error) {

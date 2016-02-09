@@ -1,7 +1,7 @@
 package main
 
 import (
-    "fmt"
+	"fmt"
 	"github.com/codegangsta/cli"
 	"github.com/erasche/gologme/server"
 	"os"
@@ -35,10 +35,10 @@ func main() {
 	}
 
 	app.Action = func(c *cli.Context) {
-        server.ServeFromPath(
-            c.String("dbPath"),
-            fmt.Sprintf(":%d", c.Int("port")),
-        )
+		server.ServeFromPath(
+			c.String("dbPath"),
+			fmt.Sprintf(":%d", c.Int("port")),
+		)
 	}
 	app.Run(os.Args)
 }

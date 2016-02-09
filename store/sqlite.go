@@ -2,12 +2,12 @@ package store
 
 import (
 	"database/sql"
-	"time"
-	_ "github.com/mattn/go-sqlite3"
-    gologme "github.com/erasche/gologme/types"
 	"errors"
 	"fmt"
+	gologme "github.com/erasche/gologme/types"
+	_ "github.com/mattn/go-sqlite3"
 	"log"
+	"time"
 )
 
 //The first implementation.
@@ -243,14 +243,11 @@ func (ds *SqliteSQLDataStore) ExportEventsByDate(tm time.Time) *gologme.EventLog
 	}
 }
 
-
-
-
 func NewSqliteSQLDataStore(conf map[string]string) (DataStore, error) {
-    var dsn string
+	var dsn string
 	if val, ok := conf["DATASTORE_PATH"]; ok {
 		dsn = val
-    } else {
+	} else {
 		return nil, errors.New(fmt.Sprintf("%s is required for the sqlite datastore", "DATASTORE_PATH"))
 	}
 
@@ -265,4 +262,3 @@ func NewSqliteSQLDataStore(conf map[string]string) (DataStore, error) {
 		DB:  db,
 	}, nil
 }
-

@@ -4,10 +4,10 @@ package store
 import (
 	"errors"
 	"fmt"
-    "time"
+	gologme "github.com/erasche/gologme/types"
 	"log"
 	"strings"
-    gologme "github.com/erasche/gologme/types"
+	"time"
 )
 
 var UserNotFoundError = errors.New("User not found")
@@ -25,9 +25,9 @@ type DataStore interface {
 		key string,
 	) (int, error)
 	Name() string
-    FindUserNameById(id int) (string, error)
-    SetupDb()
-    ExportEventsByDate(tm time.Time) *gologme.EventLog
+	FindUserNameById(id int) (string, error)
+	SetupDb()
+	ExportEventsByDate(tm time.Time) *gologme.EventLog
 }
 
 type DataStoreFactory func(conf map[string]string) (DataStore, error)

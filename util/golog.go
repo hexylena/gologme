@@ -1,12 +1,12 @@
 package gologme
 
 import (
+	"github.com/erasche/gologme/store"
+	gologme_types "github.com/erasche/gologme/types"
 	"log"
-    "time"
-    "github.com/erasche/gologme/store"
-    gologme_types "github.com/erasche/gologme/types"
-    "os/user"
-    "path"
+	"os/user"
+	"path"
+	"time"
 )
 
 type Golog struct {
@@ -14,11 +14,11 @@ type Golog struct {
 }
 
 func (t *Golog) LogToDb(uid int, windowlogs []gologme_types.WindowLogs, keylogs []gologme_types.KeyLogs, wll int) {
-    t.DS.LogToDb(uid, windowlogs, keylogs, wll)
+	t.DS.LogToDb(uid, windowlogs, keylogs, wll)
 }
 
 func (t *Golog) ExportEventsByDate(tm time.Time) *gologme_types.EventLog {
-    return t.DS.ExportEventsByDate(tm)
+	return t.DS.ExportEventsByDate(tm)
 }
 
 func (t *Golog) Log(args gologme_types.RpcArgs) int {
@@ -40,27 +40,27 @@ func (t *Golog) Log(args gologme_types.RpcArgs) int {
 }
 
 func (t *Golog) SetupDb() {
-    t.DS.SetupDb();
+	t.DS.SetupDb()
 }
 
 func NewGolog(fn string) *Golog {
-    if len(fn) == 0 {
-        user, err := user.Current()
-        if err != nil {
-            log.Fatal(err)
-        }
-        fn = path.Join(user.HomeDir, ".gologme.db")
-    }
+	if len(fn) == 0 {
+		user, err := user.Current()
+		if err != nil {
+			log.Fatal(err)
+		}
+		fn = path.Join(user.HomeDir, ".gologme.db")
+	}
 
-    datastore, err := store.CreateDataStore(map[string]string{
-        "DATASTORE": "sqlite3",
-        "DATASTORE_PATH": fn,
-    })
-    if err != nil {
-        log.Fatal(err)
-    }
+	datastore, err := store.CreateDataStore(map[string]string{
+		"DATASTORE":      "sqlite3",
+		"DATASTORE_PATH": fn,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    return &Golog{
-        DS: datastore,
-    }
+	return &Golog{
+		DS: datastore,
+	}
 }
