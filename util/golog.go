@@ -1,6 +1,7 @@
 package gologme
 
 import (
+	"fmt"
 	"github.com/erasche/gologme/store"
 	gologme_types "github.com/erasche/gologme/types"
 	"log"
@@ -16,6 +17,7 @@ func (t *Golog) LogToDb(uid int, windowlogs []gologme_types.WindowLogs, keylogs 
 }
 
 func (t *Golog) ExportEventsByDate(tm time.Time) *gologme_types.EventLog {
+	fmt.Printf("%#v\n", t)
 	return t.DS.ExportEventsByDate(tm)
 }
 
@@ -45,8 +47,10 @@ func NewGolog(fn string) *Golog {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	return &Golog{
+	x := &Golog{
 		DS: datastore,
 	}
+
+	fmt.Printf("%#v\n", x)
+	return x
 }

@@ -11,7 +11,8 @@ import (
 
 var golog *gologme.Golog
 
-func ServeFromGolog(golog *gologme.Golog, url string) {
+func ServeFromGolog(g *gologme.Golog, url string) {
+	golog = g
 	server := NewServer()
 	router := mux.NewRouter()
 	router.Handle("/rpc", server)
@@ -23,8 +24,7 @@ func ServeFromGolog(golog *gologme.Golog, url string) {
 }
 
 func ServeFromPath(dbPath string, url string) {
-	gologme := gologme.NewGolog(dbPath)
-	x, _ := gologme.DS.FindUserNameById(1)
-	println(x)
-	ServeFromGolog(gologme, url)
+	g := gologme.NewGolog(dbPath)
+	fmt.Printf("%#v\n", g)
+	ServeFromGolog(g, url)
 }
