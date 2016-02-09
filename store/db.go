@@ -75,8 +75,6 @@ func CreateDataStore(conf map[string]string) (DataStore, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	println(ef.DB)
-	println(err)
 	ef.SetupDb()
 	return ef, err
 }

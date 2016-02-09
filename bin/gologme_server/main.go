@@ -16,9 +16,9 @@ func main() {
 	user, err := user.Current()
 	var dbPath string
 	if err != nil {
-		dbPath = path.Join(user.HomeDir, ".gologme.db")
+		dbPath = "gologme.db"
 	} else {
-		dbPath = "~/.gologme.db"
+		dbPath = path.Join(user.HomeDir, ".gologme.db")
 	}
 
 	app.Flags = []cli.Flag{

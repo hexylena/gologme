@@ -4,8 +4,6 @@ import (
 	"github.com/erasche/gologme/store"
 	gologme_types "github.com/erasche/gologme/types"
 	"log"
-	"os/user"
-	"path"
 	"time"
 )
 
@@ -40,14 +38,6 @@ func (t *Golog) Log(args gologme_types.RpcArgs) int {
 }
 
 func NewGolog(fn string) *Golog {
-	if len(fn) == 0 {
-		user, err := user.Current()
-		if err != nil {
-			log.Fatal(err)
-		}
-		fn = path.Join(user.HomeDir, ".gologme.db")
-	}
-
 	datastore, err := store.CreateDataStore(map[string]string{
 		"DATASTORE":      "sqlite3",
 		"DATASTORE_PATH": fn,
