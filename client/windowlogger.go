@@ -3,7 +3,7 @@ package client
 import (
 	"github.com/BurntSushi/xgb"
 	"github.com/BurntSushi/xgb/xproto"
-	gologme "github.com/erasche/gologme/util"
+	gologme "github.com/erasche/gologme/types"
 	"os/exec"
 	"strings"
 	"time"

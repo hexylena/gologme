@@ -2,24 +2,27 @@ package gologme
 
 import (
 	"log"
-	"time"
+    "time"
     "github.com/erasche/gologme/store"
+    gologme_types "github.com/erasche/gologme/types"
+    "os/user"
+    "path"
 )
 
 type Golog struct {
 	DS store.DataStore
 }
 
-func (t *Golog) LogToDb(uid int, windowlogs []WindowLogs, keylogs []KeyLogs, wll int) {
-    return t.DS.LogToDb(uid, windowlogs, keylogs, wll)
+func (t *Golog) LogToDb(uid int, windowlogs []gologme_types.WindowLogs, keylogs []gologme_types.KeyLogs, wll int) {
+    t.DS.LogToDb(uid, windowlogs, keylogs, wll)
 }
 
-func (t *Golog) ensureAuth(user string, key string) (int, error) {
-    return t.DS.CheckAuth(user, key)
+func (t *Golog) ExportEventsByDate(tm time.Time) *gologme_types.EventLog {
+    return t.DS.ExportEventsByDate(tm)
 }
 
-func (t *Golog) Log(args RpcArgs) int {
-	uid, err := t.ensureAuth(args.User, args.ApiKey)
+func (t *Golog) Log(args gologme_types.RpcArgs) int {
+	uid, err := t.DS.CheckAuth(args.User, args.ApiKey)
 	if err != nil {
 		log.Fatal(err)
 		return 1
@@ -40,183 +43,24 @@ func (t *Golog) SetupDb() {
     t.DS.SetupDb();
 }
 
-type SEvent struct {
-	T int    `json:"t"`
-	S string `json:"s"`
-}
+func NewGolog(fn string) *Golog {
+    if len(fn) == 0 {
+        user, err := user.Current()
+        if err != nil {
+            log.Fatal(err)
+        }
+        fn = path.Join(user.HomeDir, ".gologme.db")
+    }
 
-type IEvent struct {
-	T int `json:"t"`
-	S int `json:"s"`
-}
+    datastore, err := store.CreateDataStore(map[string]string{
+        "DATASTORE": "sqlite3",
+        "DATASTORE_PATH": fn,
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
 
-type SEventT struct {
-	RealTime time.Time
-	Title    string
-}
-
-type IEventT struct {
-	RealTime time.Time
-	Count    int
-}
-
-type NoteEvent struct {
-	RealTime time.Time
-	Type     int
-	Contents string
-}
-
-type EventLog struct {
-	Blog           string    `json:"blog"`
-	Note_events    []*SEvent `json:"notes_events"`
-	Window_events  []*SEvent `json:"window_events"`
-	Keyfreq_events []*IEvent `json:"keyfreq_events"`
-}
-
-func (t *Golog) exportWindowLogsByRange(t0 int64, t1 int64) []*SEvent {
-	stmt, err := t.Db.Prepare("select time, name from windowLogs where time >= ? and time < ? order by id")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer stmt.Close()
-
-	rows, err := stmt.Query(t0, t1)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-
-	logs := make([]*SEvent, 0)
-	for rows.Next() {
-		var (
-			t int
-			s string
-		)
-		rows.Scan(&t, &s)
-
-		logs = append(
-			logs,
-			&SEvent{
-				T: t,
-				S: s,
-			},
-		)
-	}
-	return logs
-}
-
-func (t *Golog) exportKeyLogsByRange(t0 int64, t1 int64) []*IEvent {
-	stmt, err := t.Db.Prepare("select time, count from keyLogs where time >= ? and time < ? order by id")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer stmt.Close()
-
-	rows, err := stmt.Query(t0, t1)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-
-	logs := make([]*IEvent, 0)
-	for rows.Next() {
-		var (
-			t int
-			s int
-		)
-		rows.Scan(&t, &s)
-
-		logs = append(
-			logs,
-			&IEvent{
-				T: t,
-				S: s,
-			},
-		)
-	}
-	return logs
-}
-
-func (t *Golog) exportBlog(t0 int64, t1 int64) []*SEvent {
-	stmt, err := t.Db.Prepare("select time, type, contents from notes where time >= ? and time < ? and type = ? order by id")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer stmt.Close()
-
-	rows, err := stmt.Query(t0, t1, BLOG_TYPE)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-
-	logs := make([]*SEvent, 0)
-	for rows.Next() {
-		var (
-			Time     int
-			Type     int
-			Contents string
-		)
-		rows.Scan(&Time, &Type, &Contents)
-		logs = append(
-			logs,
-			&SEvent{
-				T: Time,
-				S: Contents,
-			},
-		)
-	}
-	return logs
-}
-
-func (t *Golog) exportNotes(t0 int64, t1 int64) []*SEvent {
-	stmt, err := t.Db.Prepare("select time, type, contents from notes where time >= ? and time < ? and type = ? order by id")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer stmt.Close()
-
-	rows, err := stmt.Query(t0, t1, NOTE_TYPE)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-
-	logs := make([]*SEvent, 0)
-	for rows.Next() {
-		var (
-			Time     int
-			Type     int
-			Contents string
-		)
-		rows.Scan(&Time, &Type, &Contents)
-		logs = append(
-			logs,
-			&SEvent{
-				T: Time,
-				S: Contents,
-			},
-		)
-	}
-	return logs
-}
-
-func (t *Golog) ExportEventsByDate(tm time.Time) *EventLog {
-	t0 := Ulogme7amTime(tm)
-	t1 := Ulogme7amTime(Tomorrow(tm))
-
-	blog := t.exportBlog(t0, t1)
-	var blogstr string
-	if len(blog) > 0 {
-		blogstr = blog[0].S
-	} else {
-		blogstr = ""
-	}
-
-	return &EventLog{
-		Window_events:  t.exportWindowLogsByRange(t0, t1),
-		Keyfreq_events: t.exportKeyLogsByRange(t0, t1),
-		Note_events:    t.exportNotes(t0, t1),
-		Blog:           blogstr,
-	}
+    return &Golog{
+        DS: datastore,
+    }
 }

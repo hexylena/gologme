@@ -2,7 +2,7 @@ package client
 
 import (
 	"github.com/MarinX/keylogger"
-	gologme "github.com/erasche/gologme/util"
+	gologme "github.com/erasche/gologme/types"
 	"log"
 	"strings"
 	"time"

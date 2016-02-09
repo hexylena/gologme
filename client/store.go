@@ -3,7 +3,8 @@ package client
 import (
 	"database/sql"
 	"fmt"
-	gologme "github.com/erasche/gologme/util"
+	gologme "github.com/erasche/gologme/types"
+	gologme_util "github.com/erasche/gologme/util"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"net/rpc"
@@ -33,8 +34,8 @@ func send_local(wl []gologme.WindowLogs, kl []gologme.KeyLogs, wi int) {
 		log.Fatal(err)
 	}
 	defer db.Close()
-	golog := new(gologme.Golog)
-	golog.SetupDb(db)
+    golog := gologme_util.NewGolog("")
+    golog.SetupDb()
 	golog.LogToDb(1, wl, kl, wi)
 }
 

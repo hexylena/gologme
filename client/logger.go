@@ -5,7 +5,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	gologme "github.com/erasche/gologme/util"
+	gologme "github.com/erasche/gologme/types"
 )
 
 func Golog(logbuffer int, windowLogGranularity int, keyLogGranularity int, standalone bool) {

@@ -4,10 +4,10 @@ package store
 import (
 	"errors"
 	"fmt"
+    "time"
 	"log"
 	"strings"
-	"os/user"
-	"path"
+    gologme "github.com/erasche/gologme/types"
 )
 
 var UserNotFoundError = errors.New("User not found")
@@ -27,6 +27,7 @@ type DataStore interface {
 	Name() string
     FindUserNameById(id int) (string, error)
     SetupDb()
+    ExportEventsByDate(tm time.Time) *gologme.EventLog
 }
 
 type DataStoreFactory func(conf map[string]string) (DataStore, error)
@@ -72,19 +73,3 @@ func CreateDataStore(conf map[string]string) (DataStore, error) {
 	// Run the factory with the configuration.
 	return engineFactory(conf)
 }
-
-//func main() {
-	//user, err := user.Current()
-	//if err != nil {
-		//log.Fatal(err)
-	//}
-	//fn := path.Join(user.HomeDir, ".gologme.db")
-
-	//datastore, err := CreateDataStore(map[string]string{
-		//"DATASTORE": "sqlite3",
-        //"DATASTORE_PATH": fn,
-	//})
-	//if err != nil {
-		//log.Fatal(err)
-	//}
-//}

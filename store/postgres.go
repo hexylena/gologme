@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+    "time"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
     gologme "github.com/erasche/gologme/types"
@@ -94,6 +95,10 @@ func (pds *PostgreSQLDataStore) FindUserNameById(id int) (string, error) {
 		return "", err
 	}
 	return username, nil
+}
+
+func (pds *PostgreSQLDataStore) ExportEventsByDate(tm time.Time) *gologme.EventLog {
+    return nil
 }
 
 func NewPostgreSQLDataStore(conf map[string]string) (DataStore, error) {

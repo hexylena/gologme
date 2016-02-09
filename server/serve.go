@@ -1,7 +1,6 @@
 package server
 
 import (
-	"database/sql"
 	"fmt"
 	gologme "github.com/erasche/gologme/util"
 	"github.com/gorilla/mux"
@@ -12,10 +11,7 @@ import (
 
 var golog *gologme.Golog
 
-func ServeFromDb(db *sql.DB, url string) {
-	golog = new(gologme.Golog)
-	golog.SetupDb(db)
-
+func ServeFromGolog(golog *gologme.Golog, url string) {
 	server := NewServer()
 	router := mux.NewRouter()
 	router.Handle("/rpc", server)
@@ -27,10 +23,6 @@ func ServeFromDb(db *sql.DB, url string) {
 }
 
 func ServeFromPath(dbPath string, url string) {
-	db, err := sql.Open("sqlite3", dbPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
-	go ServeFromDb(db, url)
+    gologme := gologme.NewGolog(dbPath)
+	go ServeFromGolog(gologme, url)
 }

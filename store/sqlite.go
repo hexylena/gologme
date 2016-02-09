@@ -2,6 +2,7 @@ package store
 
 import (
 	"database/sql"
+	"time"
 	_ "github.com/mattn/go-sqlite3"
     gologme "github.com/erasche/gologme/types"
 	"errors"
@@ -93,6 +94,157 @@ func (ds *SqliteSQLDataStore) FindUserNameById(id int) (string, error) {
 	}
 	return username, nil
 }
+
+func (ds *SqliteSQLDataStore) exportWindowLogsByRange(t0 int64, t1 int64) []*gologme.SEvent {
+	stmt, err := ds.DB.Prepare("select time, name from windowLogs where time >= ? and time < ? order by id")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(t0, t1)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	logs := make([]*gologme.SEvent, 0)
+	for rows.Next() {
+		var (
+			t int
+			s string
+		)
+		rows.Scan(&t, &s)
+
+		logs = append(
+			logs,
+			&gologme.SEvent{
+				T: t,
+				S: s,
+			},
+		)
+	}
+	return logs
+}
+
+func (ds *SqliteSQLDataStore) exportKeyLogsByRange(t0 int64, t1 int64) []*gologme.IEvent {
+	stmt, err := ds.DB.Prepare("select time, count from keyLogs where time >= ? and time < ? order by id")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(t0, t1)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	logs := make([]*gologme.IEvent, 0)
+	for rows.Next() {
+		var (
+			t int
+			s int
+		)
+		rows.Scan(&t, &s)
+
+		logs = append(
+			logs,
+			&gologme.IEvent{
+				T: t,
+				S: s,
+			},
+		)
+	}
+	return logs
+}
+
+func (ds *SqliteSQLDataStore) exportBlog(t0 int64, t1 int64) []*gologme.SEvent {
+	stmt, err := ds.DB.Prepare("select time, type, contents from notes where time >= ? and time < ? and type = ? order by id")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(t0, t1, gologme.BLOG_TYPE)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	logs := make([]*gologme.SEvent, 0)
+	for rows.Next() {
+		var (
+			Time     int
+			Type     int
+			Contents string
+		)
+		rows.Scan(&Time, &Type, &Contents)
+		logs = append(
+			logs,
+			&gologme.SEvent{
+				T: Time,
+				S: Contents,
+			},
+		)
+	}
+	return logs
+}
+
+func (ds *SqliteSQLDataStore) exportNotes(t0 int64, t1 int64) []*gologme.SEvent {
+	stmt, err := ds.DB.Prepare("select time, type, contents from notes where time >= ? and time < ? and type = ? order by id")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(t0, t1, gologme.NOTE_TYPE)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	logs := make([]*gologme.SEvent, 0)
+	for rows.Next() {
+		var (
+			Time     int
+			Type     int
+			Contents string
+		)
+		rows.Scan(&Time, &Type, &Contents)
+		logs = append(
+			logs,
+			&gologme.SEvent{
+				T: Time,
+				S: Contents,
+			},
+		)
+	}
+	return logs
+}
+
+func (ds *SqliteSQLDataStore) ExportEventsByDate(tm time.Time) *gologme.EventLog {
+	t0 := Ulogme7amTime(tm)
+	t1 := Ulogme7amTime(Tomorrow(tm))
+
+	blog := ds.exportBlog(t0, t1)
+	var blogstr string
+	if len(blog) > 0 {
+		blogstr = blog[0].S
+	} else {
+		blogstr = ""
+	}
+
+	return &gologme.EventLog{
+		Window_events:  ds.exportWindowLogsByRange(t0, t1),
+		Keyfreq_events: ds.exportKeyLogsByRange(t0, t1),
+		Note_events:    ds.exportNotes(t0, t1),
+		Blog:           blogstr,
+	}
+}
+
+
+
 
 func NewSqliteSQLDataStore(conf map[string]string) (DataStore, error) {
     var dsn string
