@@ -1,12 +1,12 @@
-package main
+package store
 
 import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/erasche/gologme/util"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+    gologme "github.com/erasche/gologme/types"
 	"log"
 )
 
@@ -14,6 +14,13 @@ import (
 type PostgreSQLDataStore struct {
 	DSN string
 	DB  *sqlx.DB
+}
+
+func (ds *PostgreSQLDataStore) SetupDb() {
+	_, err := ds.DB.Exec(DB_SCHEMA)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func (pds *PostgreSQLDataStore) LogToDb(uid int, windowlogs []gologme.WindowLogs, keylogs []gologme.KeyLogs, wll int) {

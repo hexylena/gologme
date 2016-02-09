@@ -1,11 +1,11 @@
-package main
+package store
 
 import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
+    gologme "github.com/erasche/gologme/types"
 	"errors"
 	"fmt"
-	"github.com/erasche/gologme/util"
 	"log"
 )
 
@@ -13,6 +13,13 @@ import (
 type SqliteSQLDataStore struct {
 	DSN string
 	DB  *sql.DB
+}
+
+func (ds *SqliteSQLDataStore) SetupDb() {
+	_, err := ds.DB.Exec(DB_SCHEMA)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func (ds *SqliteSQLDataStore) LogToDb(uid int, windowlogs []gologme.WindowLogs, keylogs []gologme.KeyLogs, wll int) {

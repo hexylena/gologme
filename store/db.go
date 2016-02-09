@@ -1,10 +1,9 @@
 // Package definition and import the required stdlib packages.
-package main
+package store
 
 import (
 	"errors"
 	"fmt"
-	"github.com/erasche/gologme/util"
 	"log"
 	"strings"
 	"os/user"
@@ -27,6 +26,7 @@ type DataStore interface {
 	) (int, error)
 	Name() string
     FindUserNameById(id int) (string, error)
+    SetupDb()
 }
 
 type DataStoreFactory func(conf map[string]string) (DataStore, error)

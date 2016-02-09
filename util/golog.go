@@ -1,37 +1,21 @@
 package gologme
 
 import (
-	"database/sql"
-	//"fmt"
 	"log"
 	"time"
-	//"github.com/erasche/gologme/ulogme"
+    "github.com/erasche/gologme/store"
 )
 
 type Golog struct {
-	Db *sql.DB
+	DS store.DataStore
 }
 
 func (t *Golog) LogToDb(uid int, windowlogs []WindowLogs, keylogs []KeyLogs, wll int) {
-	// TODO
+    return t.DS.LogToDb(uid, windowlogs, keylogs, wll)
 }
 
 func (t *Golog) ensureAuth(user string, key string) (int, error) {
-	// TODO
-	// Pretty assuredly not safe from timing attacks.
-	stmt, err := t.Db.Prepare("select id from users where username = ? and api_key = ?")
-	if err != nil {
-		return -1, err
-	}
-	defer stmt.Close()
-
-	var uid int
-	err = stmt.QueryRow(user, key).Scan(&uid)
-	if err != nil {
-		return -1, err
-	}
-
-	return uid, nil
+    return t.DS.CheckAuth(user, key)
 }
 
 func (t *Golog) Log(args RpcArgs) int {
@@ -52,12 +36,8 @@ func (t *Golog) Log(args RpcArgs) int {
 	return 0
 }
 
-func (t *Golog) SetupDb(db *sql.DB) {
-	_, err := db.Exec(DB_SCHEMA)
-	if err != nil {
-		log.Fatal(err)
-	}
-	t.Db = db
+func (t *Golog) SetupDb() {
+    t.DS.SetupDb();
 }
 
 type SEvent struct {
