@@ -33,6 +33,7 @@ And mostly I want to practice go more :)
 - [ ] docker image, since standalone mode + /dev/input mounts are really all that's required
 - [ ] AF_UNIX instead of lo internet socket?
 - [ ] ensure network connections are closed promptly
+- [ ] cute cli graphs to document logging progress
 
 ## LICENSE
 
