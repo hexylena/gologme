@@ -21,12 +21,13 @@ func send(wl []gologme.WindowLogs, wi int, kl []gologme.KeyLogs, standalone bool
 }
 
 func send_local(wl []gologme.WindowLogs, kl []gologme.KeyLogs, wi int) {
+	// TODO: upgrade to use db store
 	user, err := user.Current()
 	if err != nil {
 		log.Fatal(err)
-
 	}
-	fn := path.Join(user.HomeDir, ".gologme.db")
+
+	fn := path.Join(user.HomeDir, "test.db")
 	fmt.Printf("Storing to %s\n", fn)
 	db, err := sql.Open("sqlite3", fn)
 	// TODO: Ensure admin user?
