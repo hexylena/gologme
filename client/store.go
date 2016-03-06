@@ -9,7 +9,6 @@ import (
 )
 
 type receiver struct {
-	Standalone    bool
 	ServerAddress string
 }
 
