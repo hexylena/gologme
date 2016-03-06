@@ -1,7 +1,3 @@
-GOOS ?= linux
-GOARCH ?= amd64
-SRC := $(wildcard *.go)
-
 # TODO
 all: gologme_server gologme_client
 
@@ -27,5 +23,5 @@ qc_deps:
 qc:
 	gometalinter --cyclo-over=10 --deadline=30s --vendor --json ./... > report.json
 
-test: $(SRC) deps gofmt
+test: deps gofmt
 	go test -v $$(glide novendor)
