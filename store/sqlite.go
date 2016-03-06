@@ -4,10 +4,11 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	gologme "github.com/erasche/gologme/types"
-	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"time"
+
+	gologme "github.com/erasche/gologme/types"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 //The first implementation.

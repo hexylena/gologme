@@ -17,7 +17,7 @@ deps:
 	glide install
 
 gofmt:
-	goimports $$(find . -type f -name '*.go' -not -path "./vendor/*")
+	goimports -w $$(find . -type f -name '*.go' -not -path "./vendor/*")
 	gofmt -w $$(find . -type f -name '*.go' -not -path "./vendor/*")
 
 qc_deps:

@@ -1,10 +1,11 @@
 package server
 
 import (
+	"net/http"
+
 	"github.com/gorilla/mux"
 	"github.com/gorilla/rpc"
 	"github.com/gorilla/rpc/json"
-	"net/http"
 )
 
 type Route struct {

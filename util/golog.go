@@ -2,10 +2,11 @@ package gologme
 
 import (
 	"fmt"
-	"github.com/erasche/gologme/store"
-	gologme_types "github.com/erasche/gologme/types"
 	"log"
 	"time"
+
+	"github.com/erasche/gologme/store"
+	gologme_types "github.com/erasche/gologme/types"
 )
 
 type Golog struct {

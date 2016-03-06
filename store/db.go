@@ -4,10 +4,11 @@ package store
 import (
 	"errors"
 	"fmt"
-	gologme "github.com/erasche/gologme/types"
 	"log"
 	"strings"
 	"time"
+
+	gologme "github.com/erasche/gologme/types"
 )
 
 var UserNotFoundError = errors.New("User not found")

@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/codegangsta/cli"
-	"github.com/erasche/gologme/server"
 	"os"
 	"os/user"
 	"path"
+
+	"github.com/codegangsta/cli"
+	"github.com/erasche/gologme/server"
 )
 
 func main() {

@@ -3,13 +3,14 @@ package client
 import (
 	"database/sql"
 	"fmt"
-	gologme "github.com/erasche/gologme/types"
-	gologme_util "github.com/erasche/gologme/util"
-	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"net/rpc"
 	"os/user"
 	"path"
+
+	gologme "github.com/erasche/gologme/types"
+	gologme_util "github.com/erasche/gologme/util"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func send(wl []gologme.WindowLogs, wi int, kl []gologme.KeyLogs, standalone bool) {

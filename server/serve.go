@@ -2,11 +2,12 @@ package server
 
 import (
 	"fmt"
+	"log"
+	"net/http"
+
 	gologme "github.com/erasche/gologme/util"
 	"github.com/gorilla/mux"
 	_ "github.com/mattn/go-sqlite3"
-	"log"
-	"net/http"
 )
 
 var golog *gologme.Golog

@@ -5,9 +5,10 @@ package client
 import (
 	"bytes"
 	"fmt"
-	gologme "github.com/erasche/gologme/types"
 	"os/exec"
 	"time"
+
+	gologme "github.com/erasche/gologme/types"
 )
 
 func binLogKeys(c chan *gologme.KeyLogs, keyLoggingGranularity int, keyboardDeviceId string) {

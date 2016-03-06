@@ -1,11 +1,12 @@
 package main
 
 import (
-	"github.com/codegangsta/cli"
-	"github.com/erasche/gologme/client"
 	"os"
 	"os/user"
 	"path"
+
+	"github.com/codegangsta/cli"
+	"github.com/erasche/gologme/client"
 )
 
 func main() {

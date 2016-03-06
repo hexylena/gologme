@@ -1,9 +1,10 @@
 package main
 
 import (
-	gologme "github.com/erasche/gologme/util"
 	"log"
 	"time"
+
+	gologme "github.com/erasche/gologme/util"
 )
 
 func exportNotes(t *gologme.Golog, uid int) []gologme.NoteEvent {

@@ -2,11 +2,12 @@ package main
 
 import (
 	"database/sql"
+	"log"
+	"os"
+
 	"github.com/codegangsta/cli"
 	gologme "github.com/erasche/gologme/util"
 	_ "github.com/mattn/go-sqlite3"
-	"log"
-	"os"
 )
 
 func main() {
