@@ -9,8 +9,8 @@ import (
 )
 
 type receiver struct {
-    Standalone bool
-    ServerAddress string
+	Standalone    bool
+	ServerAddress string
 }
 
 func (r *receiver) send(wl []gologme.WindowLogs, wi int, kl []gologme.KeyLogs) {

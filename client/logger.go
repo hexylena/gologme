@@ -11,10 +11,10 @@ import (
 func Golog(logbuffer int, windowLogGranularity int, keyLogGranularity int, standalone bool, serverAddr string) {
 	window_titles := make(chan *gologme.WindowLogs)
 	keypresses := make(chan *gologme.KeyLogs, 1000)
-    receiver := &receiver{
-        Standalone: standalone,
-        ServerAddress: serverAddr,
-    }
+	receiver := &receiver{
+		Standalone:    standalone,
+		ServerAddress: serverAddr,
+	}
 
 	// Start logging
 	go logWindows(window_titles, windowLogGranularity)
