@@ -3,9 +3,13 @@ GOARCH ?= amd64
 SRC := $(wildcard *.go)
 
 # TODO
-all:
-	go build github.com/erasche/gologme/bin/gologme_client/
+all: gologme_server gologme_client
+
+gologme_server: bin client server store types util ulogme
 	go build github.com/erasche/gologme/bin/gologme_server/
+
+gologme_client: bin client server store types util ulogme
+	go build github.com/erasche/gologme/bin/gologme_client/
 
 deps:
 	go get github.com/Masterminds/glide/...
@@ -13,14 +17,15 @@ deps:
 	glide install
 
 gofmt:
-	find $(glide novendor) -name '*.go' -exec gofmt -w '{}' \;
+	goimports $$(find . -type f -name '*.go' -not -path "./vendor/*")
+	gofmt -w $$(find . -type f -name '*.go' -not -path "./vendor/*")
 
 qc_deps:
 	go get github.com/alecthomas/gometalinter
 	gometalinter --install --update
 
-qc: qc_deps
-	gometalinter --cyclo-over=10 $(glide novendor)
+qc:
+	gometalinter --cyclo-over=10 --deadline=30s --vendor --json ./... > report.json
 
 test: $(SRC) deps gofmt
-	go test -v $(glide novendor)
+	go test -v $$(glide novendor)
