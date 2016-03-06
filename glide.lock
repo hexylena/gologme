@@ -1,0 +1,28 @@
+hash: 5e569ce357d6bda8151ebc13f70beb7253ac33b2b679f63c4275c6c696fea6ca
+updated: 2016-03-06T22:35:10.868035432Z
+imports:
+- name: github.com/BurntSushi/xgb
+  version: d3d84afd14161dc1c07449d8f9feb2dca6ccc10b
+  subpackages:
+  - xproto
+- name: github.com/codegangsta/cli
+  version: a2943485b110df8842045ae0600047f88a3a56a1
+- name: github.com/gorilla/context
+  version: 1ea25387ff6f684839d82767c1733ff4d4d15d0a
+- name: github.com/gorilla/mux
+  version: 147a95f5e36a65f1c7b29440b9b0283aab154693
+- name: github.com/gorilla/rpc
+  version: 5bc359e9ad5cb47312fe2ef8d0651dafab381f27
+  subpackages:
+  - json
+- name: github.com/jmoiron/sqlx
+  version: 398dd5876282499cdfd4cb8ea0f31a672abe9495
+  subpackages:
+  - reflectx
+- name: github.com/lib/pq
+  version: 165a3529e799da61ab10faed1fabff3662d6193f
+  subpackages:
+  - oid
+- name: github.com/mattn/go-sqlite3
+  version: 45f056ca8f5ef4ee3f68796167a0a0e6a6214813
+devImports: []
