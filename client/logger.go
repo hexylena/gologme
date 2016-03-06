@@ -14,7 +14,7 @@ func Golog(logbuffer int, windowLogGranularity int, keyLogGranularity int, stand
 
 	// Start logging
 	go logWindows(window_titles, windowLogGranularity)
-	go binLogKeys(keypresses, keyLogGranularity)
+	go binLogKeys(keypresses, keyLogGranularity, "11")
 
 	wl := make([]gologme.WindowLogs, logbuffer)
 	wi := 0
@@ -29,8 +29,8 @@ func Golog(logbuffer int, windowLogGranularity int, keyLogGranularity int, stand
 	go func() {
 		// In cleanup, we need to
 		<-exit_chan
-		kl := logKeyList(keypresses)
-		send(wl, wi, kl, standalone)
+		//kl := logKeyList(keypresses)
+		//send(wl, wi, kl, standalone)
 		os.Exit(1)
 	}()
 
@@ -43,8 +43,8 @@ func Golog(logbuffer int, windowLogGranularity int, keyLogGranularity int, stand
 		}
 		// and send
 		if wi == 0 && !first {
-			kl := logKeyList(keypresses)
-			send(wl, len(wl), kl, standalone)
+			//kl := logKeyList(keypresses)
+			//send(wl, len(wl), kl, standalone)
 		}
 
 		//Stick in next log position
