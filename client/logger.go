@@ -8,9 +8,13 @@ import (
 	gologme "github.com/erasche/gologme/types"
 )
 
-func Golog(logbuffer int, windowLogGranularity int, keyLogGranularity int, standalone bool) {
+func Golog(logbuffer int, windowLogGranularity int, keyLogGranularity int, standalone bool, serverAddr string) {
 	window_titles := make(chan *gologme.WindowLogs)
 	keypresses := make(chan *gologme.KeyLogs, 1000)
+    receiver := &receiver{
+        Standalone: standalone,
+        ServerAddress: serverAddr,
+    }
 
 	// Start logging
 	go logWindows(window_titles, windowLogGranularity)
@@ -25,13 +29,13 @@ func Golog(logbuffer int, windowLogGranularity int, keyLogGranularity int, stand
 	signal.Notify(exit_chan, os.Interrupt)
 	signal.Notify(exit_chan, syscall.SIGTERM)
 
-	// And send remaining entries to the server
+	// And push remaining entries to the server
 	go func() {
 		// In cleanup, we need to
 		<-exit_chan
 		kl := logKeyList(keypresses)
-		send(wl, wi, kl, standalone)
-		os.Exit(1)
+		receiver.send(wl, wi, kl)
+		os.Exit(0)
 	}()
 
 	// Until then, loop
@@ -44,7 +48,7 @@ func Golog(logbuffer int, windowLogGranularity int, keyLogGranularity int, stand
 		// and send
 		if wi == 0 && !first {
 			kl := logKeyList(keypresses)
-			send(wl, len(wl), kl, standalone)
+			receiver.send(wl, len(wl), kl)
 		}
 
 		//Stick in next log position

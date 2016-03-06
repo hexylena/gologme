@@ -1,47 +1,20 @@
 package client
 
 import (
-	"database/sql"
 	"fmt"
-	"log"
 	"net/rpc"
-	"os/user"
-	"path"
 
 	gologme "github.com/erasche/gologme/types"
-	gologme_util "github.com/erasche/gologme/util"
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func send(wl []gologme.WindowLogs, wi int, kl []gologme.KeyLogs, standalone bool) {
-	if standalone {
-		send_local(wl, kl, wi)
-	} else {
-		send_remote(wl, kl, wi)
-	}
+type receiver struct {
+    Standalone bool
+    ServerAddress string
 }
 
-func send_local(wl []gologme.WindowLogs, kl []gologme.KeyLogs, wi int) {
-	// TODO: upgrade to use db store
-	user, err := user.Current()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fn := path.Join(user.HomeDir, "test.db")
-	fmt.Printf("Storing to %s\n", fn)
-	db, err := sql.Open("sqlite3", fn)
-	// TODO: Ensure admin user?
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
-	golog := gologme_util.NewGolog("")
-	golog.LogToDb(1, wl, kl, wi)
-}
-
-func send_remote(wl []gologme.WindowLogs, kl []gologme.KeyLogs, wi int) {
-	client, err := rpc.DialHTTP("tcp", ":10000")
+func (r *receiver) send(wl []gologme.WindowLogs, wi int, kl []gologme.KeyLogs) {
+	client, err := rpc.DialHTTP("tcp", r.ServerAddress)
 	if err != nil {
 		fmt.Printf("Error in dialing, droping logs, %s\n", err)
 		return

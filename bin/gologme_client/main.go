@@ -46,13 +46,18 @@ func main() {
 			Usage: "Path to the database",
 			Value: dbPath,
 		},
+        cli.StringFlag{
+            Name: "serverAddr",
+            Usage: "Address to send logs to, defaults to localhost for --standalone mode.",
+            Value: "127.0.0.1:10000",
+        },
 	}
 
 	app.Action = func(c *cli.Context) {
 		if c.Bool("standalone") {
 			go client.Serve(
 				dbPath,
-				":8080",
+				c.String("serverAddr"),
 			)
 		}
 
@@ -61,6 +66,7 @@ func main() {
 			c.Int("windowLogGranularity"),
 			c.Int("keyLogGranularity"),
 			c.Bool("standalone"),
+            c.String("serverAddr"),
 		)
 
 	}
