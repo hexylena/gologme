@@ -39,7 +39,7 @@ func DataUpload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Printf("User: %s, ApiKey %s, Wll: %d\n", logData.User, logData.ApiKey, logData.WindowLogsLength)
+	golog.Log(logData)
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {

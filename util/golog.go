@@ -22,7 +22,7 @@ func (t *Golog) ExportEventsByDate(tm time.Time) *gologme_types.EventLog {
 	return t.DS.ExportEventsByDate(tm)
 }
 
-func (t *Golog) Log(args gologme_types.DataLogRequest) int {
+func (t *Golog) Log(args *gologme_types.DataLogRequest) int {
 	uid, err := t.DS.CheckAuth(args.User, args.ApiKey)
 	if err != nil {
 		log.Fatal(err)
