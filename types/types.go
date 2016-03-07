@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type RpcArgs struct {
+type DataLogRequest struct {
 	User             string
 	ApiKey           string
 	Windows          []WindowLogs

@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"time"
 
+	gologme "github.com/erasche/gologme/types"
 	"github.com/gorilla/mux"
 )
 
@@ -24,6 +25,21 @@ func Events(w http.ResponseWriter, r *http.Request) {
 		// handle
 	}
 	w.Write(js)
+}
+
+func DataUpload(w http.ResponseWriter, r *http.Request) {
+	//var logs
+	decoder := json.NewDecoder(r.Body)
+	logData := new(gologme.DataLogRequest)
+	err := decoder.Decode(&logData)
+
+	if err != nil {
+		//log.Error(fmt.Sprintf("Error unmarshalling posted data %s", err))
+		http.Error(w, "Invalid Route Data", http.StatusBadRequest)
+		return
+	}
+
+	fmt.Printf("User: %s, ApiKey %s, Wll: %d\n", logData.User, logData.ApiKey, logData.WindowLogsLength)
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {

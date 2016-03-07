@@ -14,9 +14,7 @@ var golog *gologme.Golog
 
 func ServeFromGolog(g *gologme.Golog, url string) {
 	golog = g
-	server := NewServer()
 	router := mux.NewRouter()
-	router.Handle("/rpc", server)
 	// Has to happen after rpc router is registered
 	RegisterRoutes(router)
 

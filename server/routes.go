@@ -4,8 +4,6 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/gorilla/rpc"
-	"github.com/gorilla/rpc/json"
 )
 
 type Route struct {
@@ -19,6 +17,7 @@ type Routes []Route
 
 var routes = Routes{
 	Route{"Events", "GET", "/api/events/{date:[0-9]+}", Events},
+	Route{"DataUpload", "POST", "/logs", DataUpload},
 }
 
 func RegisterRoutes(router *mux.Router) *mux.Router {
@@ -27,12 +26,4 @@ func RegisterRoutes(router *mux.Router) *mux.Router {
 	}
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./server/static")))
 	return router
-}
-
-func NewServer() *rpc.Server {
-	s := rpc.NewServer()
-	s.RegisterCodec(json.NewCodec(), "application/json")
-	s.RegisterCodec(json.NewCodec(), "application/json;charset=UTF-8")
-	s.RegisterService(new(RpcLog), "")
-	return s
 }

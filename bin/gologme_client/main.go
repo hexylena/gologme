@@ -61,12 +61,17 @@ func main() {
 			)
 		}
 
+		serverPath := c.String("serverAddr")
+		if c.Bool("standalone") {
+			serverPath = "http://" + serverPath + "/logs"
+		}
+
 		client.Golog(
 			c.Int("buffSize"),
 			c.Int("windowLogGranularity"),
 			c.Int("keyLogGranularity"),
 			c.Bool("standalone"),
-			c.String("serverAddr"),
+			serverPath,
 		)
 
 	}

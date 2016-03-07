@@ -1,10 +1,10 @@
 # TODO
 all: gologme_server gologme_client
 
-gologme_server: bin client server store types util ulogme
+gologme_server: bin/gologme_server client server store types util ulogme
 	go build github.com/erasche/gologme/bin/gologme_server/
 
-gologme_client: bin client server store types util ulogme
+gologme_client: bin/gologme_client client server store types util ulogme
 	go build github.com/erasche/gologme/bin/gologme_client/
 
 deps:

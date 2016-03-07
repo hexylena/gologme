@@ -1,8 +1,10 @@
 package client
 
 import (
+	"encoding/json"
 	"fmt"
-	"net/rpc"
+	"net/http"
+	"strings"
 
 	gologme "github.com/erasche/gologme/types"
 	_ "github.com/mattn/go-sqlite3"
@@ -13,24 +15,30 @@ type receiver struct {
 }
 
 func (r *receiver) send(wl []gologme.WindowLogs, wi int, kl []gologme.KeyLogs) {
-	client, err := rpc.DialHTTP("tcp", r.ServerAddress)
-	if err != nil {
-		fmt.Printf("Error in dialing, droping logs, %s\n", err)
-		return
-		// TODO: requeue
-	}
-	args := &gologme.RpcArgs{
+	args := &gologme.DataLogRequest{
 		User:             "hxr",
 		ApiKey:           "deadbeefcafe",
 		Windows:          wl,
 		KeyLogs:          kl,
 		WindowLogsLength: wi,
 	}
-	var result int
-	err = client.Call("Golog.Log", args, &result)
+
+	// Marshal into str
+	data, err := json.Marshal(args)
 	if err != nil {
-		fmt.Printf("Error in calling RPC method, droping logs, %s\n", err)
-		return
-		// TODO: retry
+		fmt.Println(err)
+	}
+
+	// Post to our server URL
+	req, err := http.NewRequest(
+		"POST",
+		r.ServerAddress,
+		strings.NewReader(string(data)),
+	)
+	hc := http.Client{}
+	_, err = hc.Do(req)
+
+	if err != nil {
+		fmt.Println(err)
 	}
 }
