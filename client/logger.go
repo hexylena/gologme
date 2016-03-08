@@ -84,7 +84,7 @@ func (l *lgr) SendLogs() {
 	l.kLogs = l.kLogs[kidx:]
 }
 
-func Golog(logbuffer int, windowLogGranularity int, keyLogGranularity int, standalone bool, serverAddr string) {
+func Golog(windowLogGranularity int, keyLogGranularity int, standalone bool, serverAddr string) {
 	// Setup our receiver
 	receiver := &receiver{
 		ServerAddress: serverAddr,

@@ -23,13 +23,8 @@ func main() {
 
 	app.Flags = []cli.Flag{
 		cli.IntFlag{
-			Name:  "buffSize",
-			Value: 32,
-			Usage: "size of buffer before sending logs",
-		},
-		cli.IntFlag{
 			Name:  "windowLogGranularity",
-			Value: 2000,
+			Value: 500,
 			Usage: "How often to poll window title in ms",
 		},
 		cli.IntFlag{
@@ -67,7 +62,6 @@ func main() {
 		}
 
 		client.Golog(
-			c.Int("buffSize"),
 			c.Int("windowLogGranularity"),
 			c.Int("keyLogGranularity"),
 			c.Bool("standalone"),
