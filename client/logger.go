@@ -107,15 +107,3 @@ func Golog(logbuffer int, windowLogGranularity int, keyLogGranularity int, stand
 		l.SendLogs()
 	}
 }
-
-func logKeyList(c chan *gologme.KeyLogs) []gologme.KeyLogs {
-	slice := make([]gologme.KeyLogs, 0)
-	for {
-		select {
-		case e := <-c:
-			slice = append(slice, *e)
-		default:
-			return slice
-		}
-	}
-}
