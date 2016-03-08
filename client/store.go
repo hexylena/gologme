@@ -16,7 +16,7 @@ type receiver struct {
 
 func (r *receiver) send(wl []*gologme.WindowLogs, kl []*gologme.KeyLogs) {
 	args := &gologme.DataLogRequest{
-		User:    "hxr",
+		User:    "admin",
 		ApiKey:  "deadbeefcafe",
 		Windows: wl,
 		KeyLogs: kl,
