@@ -43,20 +43,33 @@ func (l *lgr) setupLoggers() {
 	l.kLogs = make([]*gologme.KeyLogs, 0)
 }
 
-func (l *lgr) Updater() {
-	// Second level resolution
-	c := time.Tick(1 * time.Second)
-	// Fetch freshest logs
-	for _ = range c {
-		l.wLogs = append(
-			l.wLogs,
-			l.WindowLogger.GetFreshestTxtLogs(),
+func (l *lgr) Updater(windowLogGranularity int, keyLogGranularity int) {
+
+	go func() {
+		// Fetch freshest logs
+		c := time.Tick(
+			time.Second * time.Duration(windowLogGranularity),
 		)
-		l.kLogs = append(
-			l.kLogs,
-			l.KeyLogger.GetFreshestNumLogs(),
+		for _ = range c {
+			l.wLogs = append(
+				l.wLogs,
+				l.WindowLogger.GetFreshestTxtLogs(),
+			)
+		}
+	}()
+
+	go func() {
+		// Fetch freshest logs
+		c := time.Tick(
+			time.Second * time.Duration(keyLogGranularity),
 		)
-	}
+		for _ = range c {
+			l.kLogs = append(
+				l.kLogs,
+				l.KeyLogger.GetFreshestNumLogs(),
+			)
+		}
+	}()
 }
 
 func (l *lgr) SendLogs() {
@@ -84,9 +97,7 @@ func Golog(logbuffer int, windowLogGranularity int, keyLogGranularity int, stand
 	l.setupLoggers()
 
 	// Trigger our updater in the background
-	go func() {
-		l.Updater()
-	}()
+	l.Updater(windowLogGranularity, keyLogGranularity)
 
 	// Trap the exit signal
 	exit_chan := make(chan os.Signal, 1)
