@@ -5,11 +5,10 @@ import (
 )
 
 type DataLogRequest struct {
-	User             string
-	ApiKey           string
-	Windows          []WindowLogs
-	KeyLogs          []KeyLogs
-	WindowLogsLength int
+	User    string
+	ApiKey  string
+	Windows []*WindowLogs
+	KeyLogs []*KeyLogs
 }
 
 type WindowLogs struct {

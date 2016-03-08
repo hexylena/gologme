@@ -17,9 +17,8 @@ var FailedToConnect = errors.New("Could not connect to database")
 type DataStore interface {
 	LogToDb(
 		uid int,
-		windowlogs []gologme.WindowLogs,
-		keylogs []gologme.KeyLogs,
-		wll int,
+		windowlogs []*gologme.WindowLogs,
+		keylogs []*gologme.KeyLogs,
 	)
 	CheckAuth(
 		user string,

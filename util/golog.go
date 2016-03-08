@@ -13,8 +13,8 @@ type Golog struct {
 	DS store.DataStore
 }
 
-func (t *Golog) LogToDb(uid int, windowlogs []gologme_types.WindowLogs, keylogs []gologme_types.KeyLogs, wll int) {
-	t.DS.LogToDb(uid, windowlogs, keylogs, wll)
+func (t *Golog) LogToDb(uid int, windowlogs []*gologme_types.WindowLogs, keylogs []*gologme_types.KeyLogs) {
+	t.DS.LogToDb(uid, windowlogs, keylogs)
 }
 
 func (t *Golog) ExportEventsByDate(tm time.Time) *gologme_types.EventLog {
@@ -35,7 +35,6 @@ func (t *Golog) Log(args *gologme_types.DataLogRequest) int {
 		uid,
 		args.Windows,
 		args.KeyLogs,
-		args.WindowLogsLength,
 	)
 	return 0
 }

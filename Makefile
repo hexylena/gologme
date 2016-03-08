@@ -1,10 +1,11 @@
+SOURCE:=client server store types util ulogme loggers
 # TODO
 all: gologme_server gologme_client
 
-gologme_server: bin/gologme_server client server store types util ulogme
+gologme_server: bin/gologme_server $(SOURCE)
 	go build github.com/erasche/gologme/bin/gologme_server/
 
-gologme_client: bin/gologme_client client server store types util ulogme
+gologme_client: bin/gologme_client $(SOURCE)
 	go build github.com/erasche/gologme/bin/gologme_client/
 
 deps:

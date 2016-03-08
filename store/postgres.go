@@ -25,7 +25,7 @@ func (ds *PostgreSQLDataStore) SetupDb() {
 	}
 }
 
-func (pds *PostgreSQLDataStore) LogToDb(uid int, windowlogs []gologme.WindowLogs, keylogs []gologme.KeyLogs, wll int) {
+func (pds *PostgreSQLDataStore) LogToDb(uid int, windowlogs []*gologme.WindowLogs, keylogs []*gologme.KeyLogs) {
 	tx, err := pds.DB.Begin()
 	if err != nil {
 		log.Fatal(err)
@@ -41,6 +41,7 @@ func (pds *PostgreSQLDataStore) LogToDb(uid int, windowlogs []gologme.WindowLogs
 	defer wl_stmt.Close()
 	defer kl_stmt.Close()
 
+	wll := len(windowlogs)
 	log.Printf("%d window logs %d key logs from [%d]\n", wll, len(keylogs), uid)
 
 	for _, w := range keylogs {

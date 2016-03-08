@@ -35,6 +35,11 @@ func (logger *KeyLogger) Setup() {
 
 func NewKeyLogger(conf map[string]string) (LogGenerator, error) {
 	var devId string
+	fmt.Println(conf)
+	v, x := conf["X11_DEVICE_ID"]
+	fmt.Println("%s %s", v, x)
+	fmt.Println(conf)
+
 	if val, ok := conf["X11_DEVICE_ID"]; ok {
 		devId = val
 	} else {
