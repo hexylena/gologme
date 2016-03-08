@@ -18,7 +18,7 @@ type WindowLogger struct {
 func (logger *WindowLogger) Setup() {
 }
 
-func NewWindowLogger(conf map[string]string) (*WindowLogger, error) {
+func NewWindowLogger(conf map[string]string) (LogGenerator, error) {
 	x, err := xgb.NewConn()
 	if err != nil {
 		log.Fatal(err)
@@ -37,7 +37,7 @@ func (logger *WindowLogger) GetFreshestTxtLogs() *gologme.WindowLogs {
 			Time: time.Now(),
 		}
 	} else {
-		title, err := logger.getCurWindowTitle(log.X11Connection)
+		title, err := logger.getCurWindowTitle(logger.X11Connection)
 		if err != nil {
 			// Ignore errors
 			log.Fatal(err)

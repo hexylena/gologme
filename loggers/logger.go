@@ -14,12 +14,8 @@ import (
 
 type LogGenerator interface {
 	Setup()
-	NumLog(
-		chan *gologme.KeyLogs,
-	)
-	TextLog(
-		c chan *gologme.WindowLogs,
-	)
+	GetFreshestNumLogs() *gologme.KeyLogs
+	GetFreshestTxtLogs() *gologme.WindowLogs
 }
 
 type LogGeneratingFactory func(conf map[string]string) (LogGenerator, error)
@@ -48,7 +44,7 @@ func init() {
 func AvailableLoggers() []string {
 	availableLogGenerators := make([]string, len(logGeneratingFactories))
 	for k, _ := range logGeneratingFactories {
-		availableLogGenerators := append(availableLogGenerators, k)
+		availableLogGenerators = append(availableLogGenerators, k)
 	}
 	return availableLogGenerators
 }

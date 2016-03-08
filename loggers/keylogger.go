@@ -33,7 +33,7 @@ func (logger *KeyLogger) Setup() {
 	}()
 }
 
-func NewKeyLogger(conf map[string]string) (*KeyLogger, error) {
+func NewKeyLogger(conf map[string]string) (LogGenerator, error) {
 	var devId string
 	if val, ok := conf["X11_DEVICE_ID"]; ok {
 		devId = val
