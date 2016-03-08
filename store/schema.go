@@ -31,4 +31,13 @@ create table if not exists notes (
     contents text,
     foreign key (uid) references users(id)
 );
+
+
+INSERT INTO users
+    (id, username, api_key)
+    SELECT 1, 'admin', 'deadbeefcafe'
+    WHERE
+    NOT EXISTS (
+        SELECT id FROM users WHERE id = 1
+    );
 `

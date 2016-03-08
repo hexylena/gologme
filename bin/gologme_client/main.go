@@ -1,11 +1,12 @@
 package main
 
 import (
-	"github.com/codegangsta/cli"
-	"github.com/erasche/gologme/client"
 	"os"
 	"os/user"
 	"path"
+
+	"github.com/codegangsta/cli"
+	"github.com/erasche/gologme/client"
 )
 
 func main() {
@@ -13,11 +14,11 @@ func main() {
 	app.Name = "gologme"
 	app.Usage = "local logging client"
 	user, err := user.Current()
-	var dbPath string
+	var defaultDbPath string
 	if err != nil {
-		dbPath = "gologme.db"
+		defaultDbPath = "gologme.db"
 	} else {
-		dbPath = path.Join(user.HomeDir, ".gologme.db")
+		defaultDbPath = path.Join(user.HomeDir, ".gologme.db")
 	}
 
 	app.Flags = []cli.Flag{
@@ -43,16 +44,26 @@ func main() {
 		cli.StringFlag{
 			Name:  "dbPath",
 			Usage: "Path to the database",
-			Value: dbPath,
+			Value: defaultDbPath,
+		},
+		cli.StringFlag{
+			Name:  "serverAddr",
+			Usage: "Address to send logs to, defaults to localhost for --standalone mode.",
+			Value: "127.0.0.1:10000",
 		},
 	}
 
 	app.Action = func(c *cli.Context) {
 		if c.Bool("standalone") {
 			go client.Serve(
-				dbPath,
-				":8080",
+				c.String("dbPath"),
+				c.String("serverAddr"),
 			)
+		}
+
+		serverPath := c.String("serverAddr")
+		if c.Bool("standalone") {
+			serverPath = "http://" + serverPath + "/logs"
 		}
 
 		client.Golog(
@@ -60,6 +71,7 @@ func main() {
 			c.Int("windowLogGranularity"),
 			c.Int("keyLogGranularity"),
 			c.Bool("standalone"),
+			serverPath,
 		)
 
 	}

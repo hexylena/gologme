@@ -2,18 +2,19 @@ package gologme
 
 import (
 	"fmt"
-	"github.com/erasche/gologme/store"
-	gologme_types "github.com/erasche/gologme/types"
 	"log"
 	"time"
+
+	"github.com/erasche/gologme/store"
+	gologme_types "github.com/erasche/gologme/types"
 )
 
 type Golog struct {
 	DS store.DataStore
 }
 
-func (t *Golog) LogToDb(uid int, windowlogs []gologme_types.WindowLogs, keylogs []gologme_types.KeyLogs, wll int) {
-	t.DS.LogToDb(uid, windowlogs, keylogs, wll)
+func (t *Golog) LogToDb(uid int, windowlogs []*gologme_types.WindowLogs, keylogs []*gologme_types.KeyLogs) {
+	t.DS.LogToDb(uid, windowlogs, keylogs)
 }
 
 func (t *Golog) ExportEventsByDate(tm time.Time) *gologme_types.EventLog {
@@ -21,7 +22,7 @@ func (t *Golog) ExportEventsByDate(tm time.Time) *gologme_types.EventLog {
 	return t.DS.ExportEventsByDate(tm)
 }
 
-func (t *Golog) Log(args gologme_types.RpcArgs) int {
+func (t *Golog) Log(args *gologme_types.DataLogRequest) int {
 	uid, err := t.DS.CheckAuth(args.User, args.ApiKey)
 	if err != nil {
 		log.Fatal(err)
@@ -34,7 +35,6 @@ func (t *Golog) Log(args gologme_types.RpcArgs) int {
 		uid,
 		args.Windows,
 		args.KeyLogs,
-		args.WindowLogsLength,
 	)
 	return 0
 }
@@ -50,7 +50,5 @@ func NewGolog(fn string) *Golog {
 	x := &Golog{
 		DS: datastore,
 	}
-
-	fmt.Printf("%#v\n", x)
 	return x
 }

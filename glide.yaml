@@ -1,0 +1,13 @@
+package: github.com/erasche/gologme
+import:
+- package: github.com/BurntSushi/xgb
+  subpackages:
+  - xproto
+- package: github.com/codegangsta/cli
+- package: github.com/gorilla/mux
+- package: github.com/gorilla/rpc
+  subpackages:
+  - json
+- package: github.com/jmoiron/sqlx
+- package: github.com/lib/pq
+- package: github.com/mattn/go-sqlite3

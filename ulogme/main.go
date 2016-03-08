@@ -1,23 +1,13 @@
 package main
 
 import (
-	"database/sql"
-	"github.com/codegangsta/cli"
-	gologme "github.com/erasche/gologme/util"
-	_ "github.com/mattn/go-sqlite3"
-	"log"
 	"os"
+
+	"github.com/codegangsta/cli"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
-	db, err := sql.Open("sqlite3", "file.db")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
-	golog := new(gologme.Golog)
-	golog.Db = db
-
 	app := cli.NewApp()
 	app.Name = "ulogmeExport"
 	app.Usage = "export logs to ulogme"

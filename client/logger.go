@@ -4,51 +4,118 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
+	"github.com/erasche/gologme/loggers"
 	gologme "github.com/erasche/gologme/types"
 )
 
-func Golog(logbuffer int, windowLogGranularity int, keyLogGranularity int, standalone bool) {
-	window_titles := make(chan *gologme.WindowLogs)
-	keypresses := make(chan *gologme.KeyLogs, 1000)
+type lgr struct {
+	KeyLogger    loggers.LogGenerator
+	WindowLogger loggers.LogGenerator
+	Receiver     *receiver
 
-	// Start logging
-	go logWindows(window_titles, windowLogGranularity)
-	go binLogKeys(keypresses, keyLogGranularity)
+	wLogs []*gologme.WindowLogs
+	kLogs []*gologme.KeyLogs
+}
 
-	wl := make([]gologme.WindowLogs, logbuffer)
-	wi := 0
-	first := true
+func (l *lgr) setupLoggers() {
+	keyLogger, err := loggers.CreateLogGenerator(map[string]string{
+		"LOGGER":        "keys",
+		"X11_DEVICE_ID": "11",
+	})
+	// Must have a key Logger available. Maybe no panic later
+	if err != nil {
+		panic(err)
+	}
+
+	windowLogger, err := loggers.CreateLogGenerator(map[string]string{
+		"LOGGER": "windows",
+	})
+	// Must have a window Logger available. Maybe no panic later
+	if err != nil {
+		panic(err)
+	}
+
+	l.KeyLogger = keyLogger
+	l.WindowLogger = windowLogger
+	l.wLogs = make([]*gologme.WindowLogs, 0)
+	l.kLogs = make([]*gologme.KeyLogs, 0)
+}
+
+func (l *lgr) Updater() {
+	// Second level resolution
+	c := time.Tick(1 * time.Second)
+	// Fetch freshest logs
+	for _ = range c {
+		l.wLogs = append(
+			l.wLogs,
+			l.WindowLogger.GetFreshestTxtLogs(),
+		)
+		l.kLogs = append(
+			l.kLogs,
+			l.KeyLogger.GetFreshestNumLogs(),
+		)
+	}
+}
+
+func (l *lgr) SendLogs() {
+	widx := len(l.wLogs)
+	kidx := len(l.kLogs)
+
+	l.Receiver.send(l.wLogs[:widx], l.kLogs[:kidx])
+
+	// This seems like we need a sync on it, but I'm not smart enough for that
+	// stuff just yet.
+	l.wLogs = l.wLogs[widx:]
+	l.kLogs = l.kLogs[kidx:]
+}
+
+func Golog(logbuffer int, windowLogGranularity int, keyLogGranularity int, standalone bool, serverAddr string) {
+	// Setup our receiver
+	receiver := &receiver{
+		ServerAddress: serverAddr,
+	}
+
+	// Setup our loggers
+	l := &lgr{
+		Receiver: receiver,
+	}
+	l.setupLoggers()
+
+	// Trigger our updater in the background
+	go func() {
+		l.Updater()
+	}()
 
 	// Trap the exit signal
 	exit_chan := make(chan os.Signal, 1)
 	signal.Notify(exit_chan, os.Interrupt)
 	signal.Notify(exit_chan, syscall.SIGTERM)
 
-	// And send remaining entries to the server
+	// And push remaining entries to the server
 	go func() {
 		// In cleanup, we need to
 		<-exit_chan
-		kl := logKeyList(keypresses)
-		send(wl, wi, kl, standalone)
-		os.Exit(1)
+		l.SendLogs()
+		os.Exit(0)
 	}()
 
-	// Until then, loop
-	for {
-		// If we've hit our buffer, reset
-		if wi >= logbuffer {
-			wi = 0
-			first = false
-		}
-		// and send
-		if wi == 0 && !first {
-			kl := logKeyList(keypresses)
-			send(wl, len(wl), kl, standalone)
-		}
+	// Every 10 seconds, send logs
+	c := time.Tick(10 * time.Second)
+	for _ = range c {
+		l.SendLogs()
+	}
+}
 
-		//Stick in next log position
-		wl[wi] = *(<-window_titles)
-		wi++
+func logKeyList(c chan *gologme.KeyLogs) []gologme.KeyLogs {
+	slice := make([]gologme.KeyLogs, 0)
+	for {
+		select {
+		case e := <-c:
+			slice = append(slice, *e)
+		default:
+			return slice
+		}
 	}
 }

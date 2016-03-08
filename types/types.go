@@ -4,12 +4,11 @@ import (
 	"time"
 )
 
-type RpcArgs struct {
-	User             string
-	ApiKey           string
-	Windows          []WindowLogs
-	KeyLogs          []KeyLogs
-	WindowLogsLength int
+type DataLogRequest struct {
+	User    string
+	ApiKey  string
+	Windows []*WindowLogs
+	KeyLogs []*KeyLogs
 }
 
 type WindowLogs struct {

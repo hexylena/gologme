@@ -2,11 +2,12 @@ package main
 
 import (
 	"bufio"
-	gologme "github.com/erasche/gologme/util"
 	"log"
 	"os"
 	"path/filepath"
 	"strconv"
+
+	gologme "github.com/erasche/gologme/util"
 )
 
 func importKeys(t *gologme.Golog, uid int, logDir string) {

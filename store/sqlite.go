@@ -4,10 +4,11 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	gologme "github.com/erasche/gologme/types"
-	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"time"
+
+	gologme "github.com/erasche/gologme/types"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 //The first implementation.
@@ -23,7 +24,7 @@ func (ds *SqliteSQLDataStore) SetupDb() {
 	}
 }
 
-func (ds *SqliteSQLDataStore) LogToDb(uid int, windowlogs []gologme.WindowLogs, keylogs []gologme.KeyLogs, wll int) {
+func (ds *SqliteSQLDataStore) LogToDb(uid int, windowlogs []*gologme.WindowLogs, keylogs []*gologme.KeyLogs) {
 	tx, err := ds.DB.Begin()
 	if err != nil {
 		log.Fatal(err)
@@ -39,6 +40,7 @@ func (ds *SqliteSQLDataStore) LogToDb(uid int, windowlogs []gologme.WindowLogs, 
 	defer wl_stmt.Close()
 	defer kl_stmt.Close()
 
+	wll := len(windowlogs)
 	log.Printf("%d window logs %d key logs from [%d]\n", wll, len(keylogs), uid)
 
 	for _, w := range keylogs {

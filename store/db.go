@@ -4,10 +4,11 @@ package store
 import (
 	"errors"
 	"fmt"
-	gologme "github.com/erasche/gologme/types"
 	"log"
 	"strings"
 	"time"
+
+	gologme "github.com/erasche/gologme/types"
 )
 
 var UserNotFoundError = errors.New("User not found")
@@ -16,9 +17,8 @@ var FailedToConnect = errors.New("Could not connect to database")
 type DataStore interface {
 	LogToDb(
 		uid int,
-		windowlogs []gologme.WindowLogs,
-		keylogs []gologme.KeyLogs,
-		wll int,
+		windowlogs []*gologme.WindowLogs,
+		keylogs []*gologme.KeyLogs,
 	)
 	CheckAuth(
 		user string,

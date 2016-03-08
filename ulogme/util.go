@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	gologme "github.com/erasche/gologme/util"
 	"log"
 	"os"
+
+	gologme "github.com/erasche/gologme/util"
 )
 
 func WriteNotes(notes []gologme.NoteEvent, dir string) {
