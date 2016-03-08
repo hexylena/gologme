@@ -1,10 +1,10 @@
 package client
 
 import (
-	"encoding/json"
+	//"encoding/json"
 	"fmt"
-	"net/http"
-	"strings"
+	//"net/http"
+	//"strings"
 
 	gologme "github.com/erasche/gologme/types"
 	_ "github.com/mattn/go-sqlite3"
@@ -22,23 +22,24 @@ func (r *receiver) send(wl []gologme.WindowLogs, wi int, kl []gologme.KeyLogs) {
 		KeyLogs:          kl,
 		WindowLogsLength: wi,
 	}
+	fmt.Println(args)
 
 	// Marshal into str
-	data, err := json.Marshal(args)
-	if err != nil {
-		fmt.Println(err)
-	}
+	//data, err := json.Marshal(args)
+	//if err != nil {
+	//fmt.Println(err)
+	//}
 
-	// Post to our server URL
-	req, err := http.NewRequest(
-		"POST",
-		r.ServerAddress,
-		strings.NewReader(string(data)),
-	)
-	hc := http.Client{}
-	_, err = hc.Do(req)
+	//// Post to our server URL
+	//req, err := http.NewRequest(
+	//"POST",
+	//r.ServerAddress,
+	//strings.NewReader(string(data)),
+	//)
+	//hc := http.Client{}
+	//_, err = hc.Do(req)
 
-	if err != nil {
-		fmt.Println(err)
-	}
+	//if err != nil {
+	//fmt.Println(err)
+	//}
 }

@@ -14,11 +14,11 @@ func main() {
 	app.Name = "gologme"
 	app.Usage = "local logging client"
 	user, err := user.Current()
-	var dbPath string
+	var defaultDbPath string
 	if err != nil {
-		dbPath = "gologme.db"
+		defaultDbPath = "gologme.db"
 	} else {
-		dbPath = path.Join(user.HomeDir, ".gologme.db")
+		defaultDbPath = path.Join(user.HomeDir, ".gologme.db")
 	}
 
 	app.Flags = []cli.Flag{
@@ -44,7 +44,7 @@ func main() {
 		cli.StringFlag{
 			Name:  "dbPath",
 			Usage: "Path to the database",
-			Value: dbPath,
+			Value: defaultDbPath,
 		},
 		cli.StringFlag{
 			Name:  "serverAddr",
@@ -56,7 +56,7 @@ func main() {
 	app.Action = func(c *cli.Context) {
 		if c.Bool("standalone") {
 			go client.Serve(
-				dbPath,
+				c.String("dbPath"),
 				c.String("serverAddr"),
 			)
 		}

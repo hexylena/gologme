@@ -1,6 +1,7 @@
-package client
+package loggers
 
 import (
+	"log"
 	"os/exec"
 	"strings"
 	"time"
@@ -10,45 +11,52 @@ import (
 	gologme "github.com/erasche/gologme/types"
 )
 
-func isScreenSaverRunning() bool {
-	cmd := exec.Command("/usr/bin/xscreensaver-command", "-time")
-	stdout, _ := cmd.Output()
-	return !strings.Contains(string(stdout), "non-blanked")
+type WindowLogger struct {
+	X11Connection *xgb.Conn
 }
 
-func logWindows(c chan *gologme.WindowLogs, windowLogGranularity int) {
-	X, err := xgb.NewConn()
+func (logger *WindowLogger) Setup() {
+}
+
+func NewWindowLogger(conf map[string]string) (*WindowLogger, error) {
+	x, err := xgb.NewConn()
 	if err != nil {
-		//log.Fatal(err)
+		log.Fatal(err)
 	}
 
-	var lastTitle string
+	return &WindowLogger{
+		X11Connection: x,
+	}, nil
+}
 
-	ticker := time.Tick(time.Duration(windowLogGranularity) * time.Millisecond)
-	for {
-		<-ticker
-
-		if isScreenSaverRunning() {
-			// Locked
-			c <- &gologme.WindowLogs{Name: gologme.LOCKED_SCREEN, Time: time.Now()}
-			lastTitle = gologme.LOCKED_SCREEN
+func (logger *WindowLogger) GetFreshestTxtLogs() *gologme.WindowLogs {
+	if logger.isScreenSaverRunning() {
+		// Locked
+		return &gologme.WindowLogs{
+			Name: gologme.LOCKED_SCREEN,
+			Time: time.Now(),
+		}
+	} else {
+		title, err := logger.getCurWindowTitle(log.X11Connection)
+		if err != nil {
+			// Ignore errors
+			log.Fatal(err)
+			return nil
 		} else {
-
-			title, err := getCurWindowTitle(X)
-			if err != nil {
-				// Ignore errors
-				//log.Fatal(err)
-			} else {
-				if title != lastTitle {
-					c <- &gologme.WindowLogs{Name: title, Time: time.Now()}
-					lastTitle = title
-				}
+			return &gologme.WindowLogs{
+				Name: title,
+				Time: time.Now(),
 			}
 		}
 	}
 }
 
-func getCurWindowTitle(X *xgb.Conn) (name string, err error) {
+func (logger *WindowLogger) GetFreshestNumLogs() *gologme.KeyLogs {
+	// not implemented
+	return nil
+}
+
+func (logger *WindowLogger) getCurWindowTitle(X *xgb.Conn) (name string, err error) {
 	// Get the window id of the root window.
 	setup := xproto.Setup(X)
 	root := setup.DefaultScreen(X).Root
@@ -90,4 +98,10 @@ func getCurWindowTitle(X *xgb.Conn) (name string, err error) {
 		return "", err
 	}
 	return string(reply.Value), nil
+}
+
+func (logger *WindowLogger) isScreenSaverRunning() bool {
+	cmd := exec.Command("/usr/bin/xscreensaver-command", "-time")
+	stdout, _ := cmd.Output()
+	return !strings.Contains(string(stdout), "non-blanked")
 }

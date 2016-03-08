@@ -24,6 +24,5 @@ func ServeFromGolog(g *gologme.Golog, url string) {
 
 func ServeFromPath(dbPath string, url string) {
 	g := gologme.NewGolog(dbPath)
-	fmt.Printf("%#v\n", g)
 	ServeFromGolog(g, url)
 }

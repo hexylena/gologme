@@ -51,7 +51,5 @@ func NewGolog(fn string) *Golog {
 	x := &Golog{
 		DS: datastore,
 	}
-
-	fmt.Printf("%#v\n", x)
 	return x
 }
