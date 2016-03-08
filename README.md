@@ -24,7 +24,8 @@ And mostly I want to practice go more :)
 - [x] Ulogme import/export. Near perfect roundtripping
 - [ ] Android client
 - [x] multi-user support (Why? Who knows. Seems easy to tack on)
-- [x] standalone mode
+- [x] standalone mode (in opposition to client/server)
+- [x] no sudo required!
 
 ## TODO
 
