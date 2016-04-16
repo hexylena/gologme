@@ -2,7 +2,6 @@
 // sources:
 // server/static/css/index_style.css
 // server/static/css/overview_style.css
-// server/static/export_list.json
 // server/static/index.html
 // server/static/js/d3.min.js
 // server/static/js/d3utils.js
@@ -66,24 +65,6 @@ func serverStaticCssIndex_styleCss() (*asset, error) {
 func serverStaticCssOverview_styleCss() (*asset, error) {
 	path := "/home/hxr/work/go/src/github.com/erasche/gologme/server/static/css/overview_style.css"
 	name := "server/static/css/overview_style.css"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// serverStaticExport_listJson reads file data from disk. It returns an error on failure.
-func serverStaticExport_listJson() (*asset, error) {
-	path := "/home/hxr/work/go/src/github.com/erasche/gologme/server/static/export_list.json"
-	name := "server/static/export_list.json"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
 		return nil, err
@@ -404,7 +385,6 @@ func AssetNames() []string {
 var _bindata = map[string]func() (*asset, error){
 	"server/static/css/index_style.css":           serverStaticCssIndex_styleCss,
 	"server/static/css/overview_style.css":        serverStaticCssOverview_styleCss,
-	"server/static/export_list.json":              serverStaticExport_listJson,
 	"server/static/index.html":                    serverStaticIndexHtml,
 	"server/static/js/d3.min.js":                  serverStaticJsD3MinJs,
 	"server/static/js/d3utils.js":                 serverStaticJsD3utilsJs,
@@ -468,8 +448,7 @@ var _bintree = &bintree{nil, map[string]*bintree{
 				"index_style.css":    &bintree{serverStaticCssIndex_styleCss, map[string]*bintree{}},
 				"overview_style.css": &bintree{serverStaticCssOverview_styleCss, map[string]*bintree{}},
 			}},
-			"export_list.json": &bintree{serverStaticExport_listJson, map[string]*bintree{}},
-			"index.html":       &bintree{serverStaticIndexHtml, map[string]*bintree{}},
+			"index.html": &bintree{serverStaticIndexHtml, map[string]*bintree{}},
 			"js": &bintree{nil, map[string]*bintree{
 				"d3.min.js":                  &bintree{serverStaticJsD3MinJs, map[string]*bintree{}},
 				"d3utils.js":                 &bintree{serverStaticJsD3utilsJs, map[string]*bintree{}},
