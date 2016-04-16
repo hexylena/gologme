@@ -24,6 +24,7 @@ package server
 import (
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -533,4 +534,11 @@ func RestoreAssets(dir, name string) error {
 func _filePath(dir, name string) string {
 	cannonicalName := strings.Replace(name, "\\", "/", -1)
 	return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
+}
+
+func assetFS() http.FileSystem {
+	for k := range _bintree.Children {
+		return http.Dir(k)
+	}
+	panic("unreachable")
 }

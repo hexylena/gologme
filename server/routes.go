@@ -24,6 +24,7 @@ func RegisterRoutes(router *mux.Router) *mux.Router {
 	for _, route := range routes {
 		router.Methods(route.Method).Path(route.Pattern).Name(route.Name).Handler(route.HandlerFunc)
 	}
-	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./server/static")))
+	router.PathPrefix("/").Handler(http.FileServer(assetFS()))
+
 	return router
 }
