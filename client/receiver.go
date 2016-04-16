@@ -44,7 +44,6 @@ func (l *lgr) setupLoggers() {
 }
 
 func (l *lgr) Updater(windowLogGranularity int, keyLogGranularity int) {
-
 	go func() {
 		// Fetch freshest logs
 		c := time.Tick(

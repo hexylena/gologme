@@ -18,7 +18,7 @@ func ServeFromGolog(g *gologme.Golog, url string) {
 	// Has to happen after rpc router is registered
 	RegisterRoutes(router)
 
-	fmt.Println("Listening...")
+	fmt.Printf("Listening on %s ...\n", url)
 	log.Fatal(http.ListenAndServe(url, router))
 }
 
