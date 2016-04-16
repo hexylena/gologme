@@ -27,6 +27,6 @@ qc:
 test: deps gofmt
 	go test -v $$(glide novendor)
 
-server/bindata.go: server/static/
+server/bindata.go: server/static/*
 	go-bindata-assetfs -pkg server -debug server/static/*
 	mv bindata_assetfs.go server/bindata.go

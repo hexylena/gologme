@@ -403,7 +403,7 @@ function start() {
   .text("");
 
   // we do this random thing to defeat caching. Very annoying
-  $.getJSON("export_list.json", function(data){
+  $.getJSON("/export_list.json", function(data){
     event_list = data; // assign to global variable
 
     cur_event_id = event_list.length - 1;

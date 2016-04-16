@@ -28,6 +28,8 @@ type DataStore interface {
 	FindUserNameById(id int) (string, error)
 	SetupDb()
 	ExportEventsByDate(tm time.Time) *gologme.EventLog
+	MinDate() int
+	MaxDate() int
 }
 
 type DataStoreFactory func(conf map[string]string) (DataStore, error)

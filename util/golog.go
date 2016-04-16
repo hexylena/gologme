@@ -22,6 +22,12 @@ func (t *Golog) ExportEventsByDate(tm time.Time) *gologme_types.EventLog {
 	return t.DS.ExportEventsByDate(tm)
 }
 
+func (t *Golog) RecordedDataRange() (time.Time, time.Time) {
+	minTime := time.Unix(int64(t.DS.MinDate()), 0)
+	maxTime := time.Unix(int64(t.DS.MaxDate()), 0)
+	return minTime, maxTime
+}
+
 func (t *Golog) Log(args *gologme_types.DataLogRequest) int {
 	log.Printf("golog.Log\n")
 	uid, err := t.DS.CheckAuth(args.User, args.ApiKey)

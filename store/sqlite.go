@@ -85,6 +85,32 @@ func (ds *SqliteSQLDataStore) Name() string {
 	return "SqliteSQLDataStore"
 }
 
+func (ds *SqliteSQLDataStore) MaxDate() int {
+	var mtime int
+	err := ds.DB.QueryRow("SELECT time FROM windowLogs ORDER BY time DESC LIMIT 1").Scan(&mtime)
+
+	switch {
+	case err == sql.ErrNoRows:
+		log.Printf("No data available")
+	case err != nil:
+		log.Fatal(err)
+	}
+	return mtime
+}
+
+func (ds *SqliteSQLDataStore) MinDate() int {
+	var mtime int
+	err := ds.DB.QueryRow("SELECT time FROM windowLogs ORDER BY time ASC LIMIT 1").Scan(&mtime)
+
+	switch {
+	case err == sql.ErrNoRows:
+		log.Printf("No data available")
+	case err != nil:
+		log.Fatal(err)
+	}
+	return mtime
+}
+
 func (ds *SqliteSQLDataStore) FindUserNameById(id int) (string, error) {
 	var username string
 	err := ds.DB.QueryRow("SELECT username FROM users WHERE id = ?", id).Scan(&username)
@@ -226,7 +252,6 @@ func (ds *SqliteSQLDataStore) exportNotes(t0 int64, t1 int64) []*gologme.SEvent 
 }
 
 func (ds *SqliteSQLDataStore) ExportEventsByDate(tm time.Time) *gologme.EventLog {
-	println(tm.Unix())
 	t0 := Ulogme7amTime(tm)
 	t1 := Ulogme7amTime(Tomorrow(tm))
 

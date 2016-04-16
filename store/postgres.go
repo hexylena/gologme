@@ -86,6 +86,32 @@ func (pds *PostgreSQLDataStore) Name() string {
 	return "PostgreSQLDataStore"
 }
 
+func (ds *PostgreSQLDataStore) MaxDate() int {
+	var mtime int
+	err := ds.DB.QueryRow("SELECT time FROM windowLogs ORDER BY time DESC LIMIT 1").Scan(&mtime)
+
+	switch {
+	case err == sql.ErrNoRows:
+		log.Printf("No data available")
+	case err != nil:
+		log.Fatal(err)
+	}
+	return mtime
+}
+
+func (ds *PostgreSQLDataStore) MinDate() int {
+	var mtime int
+	err := ds.DB.QueryRow("SELECT time FROM windowLogs ORDER BY time ASC LIMIT 1").Scan(&mtime)
+
+	switch {
+	case err == sql.ErrNoRows:
+		log.Printf("No data available")
+	case err != nil:
+		log.Fatal(err)
+	}
+	return mtime
+}
+
 func (pds *PostgreSQLDataStore) FindUserNameById(id int) (string, error) {
 	var username string
 	res, err := pds.DB.Query("SELECT username FROM users WHERE id=$1", id)

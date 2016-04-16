@@ -18,6 +18,7 @@ type Routes []Route
 var routes = Routes{
 	Route{"Events", "GET", "/api/events/{date:[0-9]+}", Events},
 	Route{"DataUpload", "POST", "/logs", DataUpload},
+	Route{"ExportList", "GET", "/export_list.json", ExportList},
 }
 
 func RegisterRoutes(router *mux.Router) *mux.Router {

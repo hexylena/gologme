@@ -325,7 +325,7 @@ function drawKeyEvents() {
 function loadAllEvents() {
 
   // load the master json file and all the other jsons
-  getJSON_CACHEHACK("export_list.json").then(function(days_list) {
+  getJSON_CACHEHACK("/export_list.json").then(function(days_list) {
     event_list = days_list; // global variable assign
     console.log("fetched export_list OK.")
     return Promise.all(days_list.map(function(x) { return getJSON_CACHEHACK(x.fname); }));
