@@ -2,10 +2,10 @@ SOURCE:=client server store types util ulogme loggers
 # TODO
 all: gologme_server gologme_client
 
-gologme_server: bin/gologme_server $(SOURCE)
+gologme_server: bin/gologme_server $(SOURCE) server/bindata.go
 	go build github.com/erasche/gologme/bin/gologme_server/
 
-gologme_client: bin/gologme_client $(SOURCE)
+gologme_client: bin/gologme_client $(SOURCE) server/bindata.go
 	go build github.com/erasche/gologme/bin/gologme_client/
 
 deps:
@@ -26,3 +26,6 @@ qc:
 
 test: deps gofmt
 	go test -v $$(glide novendor)
+
+server/bindata.go: server/static/
+	go-bindata -o server/bindata.go -pkg server -debug server/static/*
