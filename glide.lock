@@ -1,5 +1,5 @@
-hash: 5e569ce357d6bda8151ebc13f70beb7253ac33b2b679f63c4275c6c696fea6ca
-updated: 2016-03-06T22:35:10.868035432Z
+hash: 2cf6b20ec076577452003f9d43f14e4a29d2bfa11eb2be131f2195ef225044f6
+updated: 2016-04-16T21:32:14.990419126Z
 imports:
 - name: github.com/BurntSushi/xgb
   version: d3d84afd14161dc1c07449d8f9feb2dca6ccc10b
@@ -7,6 +7,8 @@ imports:
   - xproto
 - name: github.com/codegangsta/cli
   version: a2943485b110df8842045ae0600047f88a3a56a1
+- name: github.com/elazarl/go-bindata-assetfs
+  version: 57eb5e1fc594ad4b0b1dbea7b286d299e0cb43c2
 - name: github.com/gorilla/context
   version: 1ea25387ff6f684839d82767c1733ff4d4d15d0a
 - name: github.com/gorilla/mux
@@ -19,6 +21,8 @@ imports:
   version: 398dd5876282499cdfd4cb8ea0f31a672abe9495
   subpackages:
   - reflectx
+- name: github.com/jteeuwen/go-bindata
+  version: a0ff2567cfb70903282db057e799fd826784d41d
 - name: github.com/lib/pq
   version: 165a3529e799da61ab10faed1fabff3662d6193f
   subpackages:
