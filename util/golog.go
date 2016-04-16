@@ -23,6 +23,7 @@ func (t *Golog) ExportEventsByDate(tm time.Time) *gologme_types.EventLog {
 }
 
 func (t *Golog) Log(args *gologme_types.DataLogRequest) int {
+	log.Printf("golog.Log\n")
 	uid, err := t.DS.CheckAuth(args.User, args.ApiKey)
 	if err != nil {
 		log.Fatal(err)

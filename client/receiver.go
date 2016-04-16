@@ -47,7 +47,7 @@ func (l *lgr) Updater(windowLogGranularity int, keyLogGranularity int) {
 	go func() {
 		// Fetch freshest logs
 		c := time.Tick(
-			time.Second * time.Duration(windowLogGranularity),
+			time.Millisecond * time.Duration(windowLogGranularity),
 		)
 		for _ = range c {
 			l.wLogs = append(
@@ -60,7 +60,7 @@ func (l *lgr) Updater(windowLogGranularity int, keyLogGranularity int) {
 	go func() {
 		// Fetch freshest logs
 		c := time.Tick(
-			time.Second * time.Duration(keyLogGranularity),
+			time.Millisecond * time.Duration(keyLogGranularity),
 		)
 		for _ = range c {
 			l.kLogs = append(

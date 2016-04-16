@@ -29,7 +29,7 @@ func main() {
 		},
 		cli.IntFlag{
 			Name:  "keyLogGranularity",
-			Value: 2000,
+			Value: 1000,
 			Usage: "How often to aggregate caught keypresses in ms",
 		},
 		cli.BoolFlag{
@@ -44,7 +44,7 @@ func main() {
 		cli.StringFlag{
 			Name:  "serverAddr",
 			Usage: "Address to send logs to, defaults to localhost for --standalone mode.",
-			Value: "127.0.0.1:10000",
+			Value: "http://127.0.0.1:10000",
 		},
 	}
 
@@ -57,9 +57,6 @@ func main() {
 		}
 
 		serverPath := c.String("serverAddr")
-		if c.Bool("standalone") {
-			serverPath = "http://" + serverPath + "/logs"
-		}
 
 		client.Golog(
 			c.Int("windowLogGranularity"),
