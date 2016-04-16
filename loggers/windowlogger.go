@@ -13,6 +13,7 @@ import (
 
 type WindowLogger struct {
 	X11Connection *xgb.Conn
+	lastText      string
 }
 
 func (logger *WindowLogger) Setup() {
@@ -38,6 +39,12 @@ func (logger *WindowLogger) GetFreshestTxtLogs() *gologme.WindowLogs {
 		}
 	} else {
 		title, err := logger.getCurWindowTitle()
+		if title == logger.lastText {
+			return nil
+		} else {
+			logger.lastText = title
+		}
+
 		if err != nil {
 			// Ignore errors
 			log.Fatal(err)

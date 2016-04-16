@@ -50,10 +50,13 @@ func (l *lgr) Updater(windowLogGranularity int, keyLogGranularity int) {
 			time.Millisecond * time.Duration(windowLogGranularity),
 		)
 		for _ = range c {
-			l.wLogs = append(
-				l.wLogs,
-				l.WindowLogger.GetFreshestTxtLogs(),
-			)
+			newWLogs := l.WindowLogger.GetFreshestTxtLogs()
+			if newWLogs != nil {
+				l.wLogs = append(
+					l.wLogs,
+					newWLogs,
+				)
+			}
 		}
 	}()
 
@@ -63,10 +66,13 @@ func (l *lgr) Updater(windowLogGranularity int, keyLogGranularity int) {
 			time.Millisecond * time.Duration(keyLogGranularity),
 		)
 		for _ = range c {
-			l.kLogs = append(
-				l.kLogs,
-				l.KeyLogger.GetFreshestNumLogs(),
-			)
+			newKLogs := l.KeyLogger.GetFreshestNumLogs()
+			if newKLogs != nil {
+				l.kLogs = append(
+					l.kLogs,
+					newKLogs,
+				)
+			}
 		}
 	}()
 }
