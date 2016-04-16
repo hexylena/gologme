@@ -15,29 +15,39 @@ func main() {
 	app.Name = "gologme"
 	app.Usage = "local logging server"
 	user, err := user.Current()
-	var dbPath string
+	var dbUrl string
 	if err != nil {
-		dbPath = "gologme.db"
+		dbUrl = "gologme.db"
 	} else {
-		dbPath = path.Join(user.HomeDir, ".gologme.db")
+		dbUrl = path.Join(user.HomeDir, ".gologme.db")
 	}
 
 	app.Flags = []cli.Flag{
 		cli.IntFlag{
-			Name:  "port",
-			Value: 8080,
-			Usage: "port to listen on",
+			Name:   "port",
+			Value:  8080,
+			Usage:  "port to listen on",
+			EnvVar: "DB_PORT",
+		},
+
+		cli.StringFlag{
+			Name:   "dbType",
+			Usage:  "Database Type (sqlite3, postgres)",
+			Value:  "sqlite3",
+			EnvVar: "DB_TYPE",
 		},
 		cli.StringFlag{
-			Name:  "dbPath",
-			Usage: "Path to the database",
-			Value: dbPath,
+			Name:   "dbUrl",
+			Usage:  "Database URL",
+			Value:  dbUrl,
+			EnvVar: "DB_URL",
 		},
 	}
 
 	app.Action = func(c *cli.Context) {
 		server.ServeFromPath(
-			c.String("dbPath"),
+			c.String("dbType"),
+			c.String("dbUrl"),
 			fmt.Sprintf(":%d", c.Int("port")),
 		)
 	}

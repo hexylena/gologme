@@ -46,9 +46,9 @@ func (t *Golog) Log(args *gologme_types.DataLogRequest) int {
 	return 0
 }
 
-func NewGolog(fn string) *Golog {
+func NewGolog(typ, fn string) *Golog {
 	datastore, err := store.CreateDataStore(map[string]string{
-		"DATASTORE":      "sqlite3",
+		"DATASTORE":      typ,
 		"DATASTORE_PATH": fn,
 	})
 	if err != nil {

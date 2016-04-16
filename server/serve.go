@@ -22,7 +22,7 @@ func ServeFromGolog(g *gologme.Golog, url string) {
 	log.Fatal(http.ListenAndServe(url, router))
 }
 
-func ServeFromPath(dbPath string, url string) {
-	g := gologme.NewGolog(dbPath)
+func ServeFromPath(dbType string, dbPath string, url string) {
+	g := gologme.NewGolog(dbType, dbPath)
 	ServeFromGolog(g, url)
 }

@@ -7,6 +7,7 @@ import (
 
 	"github.com/codegangsta/cli"
 	"github.com/erasche/gologme/client"
+	"github.com/erasche/gologme/server"
 )
 
 func main() {
@@ -50,7 +51,8 @@ func main() {
 
 	app.Action = func(c *cli.Context) {
 		if c.Bool("standalone") {
-			go client.Serve(
+			go server.ServeFromPath(
+				"sqlite3",
 				c.String("dbPath"),
 				c.String("serverAddr"),
 			)
