@@ -10,11 +10,11 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-type receiver struct {
+type Receiver struct {
 	ServerAddress string
 }
 
-func (r *receiver) send(wl []*gologme.WindowLogs, kl []*gologme.KeyLogs) {
+func (r *Receiver) Send(wl []*gologme.WindowLogs, kl []*gologme.KeyLogs) {
 	args := &gologme.DataLogRequest{
 		User:    "admin",
 		ApiKey:  "deadbeefcafe",

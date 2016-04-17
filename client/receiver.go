@@ -13,7 +13,7 @@ import (
 type lgr struct {
 	KeyLogger    loggers.LogGenerator
 	WindowLogger loggers.LogGenerator
-	Receiver     *receiver
+	Receiver     *Receiver
 
 	wLogs []*gologme.WindowLogs
 	kLogs []*gologme.KeyLogs
@@ -81,7 +81,7 @@ func (l *lgr) SendLogs() {
 	widx := len(l.wLogs)
 	kidx := len(l.kLogs)
 
-	l.Receiver.send(l.wLogs[:widx], l.kLogs[:kidx])
+	l.Receiver.Send(l.wLogs[:widx], l.kLogs[:kidx])
 
 	// This seems like we need a sync on it, but I'm not smart enough for that
 	// stuff just yet.
@@ -91,7 +91,7 @@ func (l *lgr) SendLogs() {
 
 func Golog(windowLogGranularity int, keyLogGranularity int, standalone bool, serverAddr string) {
 	// Setup our receiver
-	receiver := &receiver{
+	receiver := &Receiver{
 		ServerAddress: serverAddr,
 	}
 

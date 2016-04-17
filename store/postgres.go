@@ -5,28 +5,30 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	gologme "github.com/erasche/gologme/types"
-	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
 
 //The first implementation.
 type PostgreSQLDataStore struct {
 	DSN string
-	DB  *sqlx.DB
+	DB  *sql.DB
 }
 
 func (ds *PostgreSQLDataStore) SetupDb() {
-	_, err := ds.DB.Exec(DB_SCHEMA)
+	_, err := ds.DB.Exec(
+		strings.Replace(DB_SCHEMA, "id integer not null primary key autoincrement", "id serial not null primary key", -1),
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func (pds *PostgreSQLDataStore) LogToDb(uid int, windowlogs []*gologme.WindowLogs, keylogs []*gologme.KeyLogs) {
-	tx, err := pds.DB.Begin()
+func (ds *PostgreSQLDataStore) LogToDb(uid int, windowlogs []*gologme.WindowLogs, keylogs []*gologme.KeyLogs) {
+	tx, err := ds.DB.Begin()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -65,24 +67,21 @@ func (pds *PostgreSQLDataStore) LogToDb(uid int, windowlogs []*gologme.WindowLog
 	tx.Commit()
 }
 
-func (pds *PostgreSQLDataStore) CheckAuth(user string, key string) (int, error) {
+func (ds *PostgreSQLDataStore) CheckAuth(user string, key string) (int, error) {
 	// Pretty assuredly not safe from timing attacks.
-	stmt, err := pds.DB.Prepare("select id from users where username = ? and api_key = ?")
+	var id int
+	err := ds.DB.QueryRow("SELECT id FROM users WHERE username = ? AND api_key = ?", user, key).Scan(&id)
+
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return -1, UserNotFoundError
+		}
 		return -1, err
 	}
-	defer stmt.Close()
-
-	var uid int
-	err = stmt.QueryRow(user, key).Scan(&uid)
-	if err != nil {
-		return -1, err
-	}
-
-	return uid, nil
+	return id, nil
 }
 
-func (pds *PostgreSQLDataStore) Name() string {
+func (ds *PostgreSQLDataStore) Name() string {
 	return "PostgreSQLDataStore"
 }
 
@@ -112,10 +111,9 @@ func (ds *PostgreSQLDataStore) MinDate() int {
 	return mtime
 }
 
-func (pds *PostgreSQLDataStore) FindUserNameById(id int) (string, error) {
+func (ds *PostgreSQLDataStore) FindUserNameById(id int) (string, error) {
 	var username string
-	res, err := pds.DB.Query("SELECT username FROM users WHERE id=$1", id)
-	res.Scan(&username)
+	err := ds.DB.QueryRow("SELECT username FROM users WHERE id = ?", id).Scan(&username)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return "", UserNotFoundError
@@ -125,19 +123,163 @@ func (pds *PostgreSQLDataStore) FindUserNameById(id int) (string, error) {
 	return username, nil
 }
 
-func (pds *PostgreSQLDataStore) ExportEventsByDate(tm time.Time) *gologme.EventLog {
-	return nil
+func (ds *PostgreSQLDataStore) exportWindowLogsByRange(t0 int64, t1 int64) []*gologme.SEvent {
+	stmt, err := ds.DB.Prepare("select time, name from windowLogs where time >= ? and time < ? order by id")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(t0, t1)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	logs := make([]*gologme.SEvent, 0)
+	for rows.Next() {
+		var (
+			t int
+			s string
+		)
+		rows.Scan(&t, &s)
+
+		logs = append(
+			logs,
+			&gologme.SEvent{
+				T: t,
+				S: s,
+			},
+		)
+	}
+	return logs
+}
+
+func (ds *PostgreSQLDataStore) exportKeyLogsByRange(t0 int64, t1 int64) []*gologme.IEvent {
+	stmt, err := ds.DB.Prepare("select time, count from keyLogs where time >= ? and time < ? order by id")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(t0, t1)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	logs := make([]*gologme.IEvent, 0)
+	for rows.Next() {
+		var (
+			t int
+			s int
+		)
+		rows.Scan(&t, &s)
+
+		logs = append(
+			logs,
+			&gologme.IEvent{
+				T: t,
+				S: s,
+			},
+		)
+	}
+	return logs
+}
+
+func (ds *PostgreSQLDataStore) exportBlog(t0 int64, t1 int64) []*gologme.SEvent {
+	stmt, err := ds.DB.Prepare("select time, type, contents from notes where time >= ? and time < ? and type = ? order by id")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(t0, t1, gologme.BLOG_TYPE)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	logs := make([]*gologme.SEvent, 0)
+	for rows.Next() {
+		var (
+			Time     int
+			Type     int
+			Contents string
+		)
+		rows.Scan(&Time, &Type, &Contents)
+		logs = append(
+			logs,
+			&gologme.SEvent{
+				T: Time,
+				S: Contents,
+			},
+		)
+	}
+	return logs
+}
+
+func (ds *PostgreSQLDataStore) exportNotes(t0 int64, t1 int64) []*gologme.SEvent {
+	stmt, err := ds.DB.Prepare("select time, type, contents from notes where time >= ? and time < ? and type = ? order by id")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(t0, t1, gologme.NOTE_TYPE)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	logs := make([]*gologme.SEvent, 0)
+	for rows.Next() {
+		var (
+			Time     int
+			Type     int
+			Contents string
+		)
+		rows.Scan(&Time, &Type, &Contents)
+		logs = append(
+			logs,
+			&gologme.SEvent{
+				T: Time,
+				S: Contents,
+			},
+		)
+	}
+	return logs
+}
+
+func (ds *PostgreSQLDataStore) ExportEventsByDate(tm time.Time) *gologme.EventLog {
+	t0 := Ulogme7amTime(tm)
+	t1 := Ulogme7amTime(Tomorrow(tm))
+
+	blog := ds.exportBlog(t0, t1)
+	var blogstr string
+	if len(blog) > 0 {
+		blogstr = blog[0].S
+	} else {
+		blogstr = ""
+	}
+
+	return &gologme.EventLog{
+		Window_events:  ds.exportWindowLogsByRange(t0, t1),
+		Keyfreq_events: ds.exportKeyLogsByRange(t0, t1),
+		Note_events:    ds.exportNotes(t0, t1),
+		Blog:           blogstr,
+	}
 }
 
 func NewPostgreSQLDataStore(conf map[string]string) (DataStore, error) {
 	var dsn string
-	if val, ok := conf["DATASTORE_POSTGRES_DSN"]; ok {
+	if val, ok := conf["DATASTORE_URL"]; ok {
 		dsn = val
 	} else {
-		return nil, errors.New(fmt.Sprintf("%s is required for the postgres datastore", "DATASTORE_POSTGRES_DSN"))
+		return nil, errors.New(fmt.Sprintf("%s is required for the postgres datastore", "DATASTORE_URL"))
 	}
 
-	db, err := sqlx.Connect("postgres", dsn)
+	db, err := sql.Open("postgres", dsn)
 	if err != nil {
 		log.Panicf("Failed to connect to datastore: %s", err.Error())
 		return nil, FailedToConnect

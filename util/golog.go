@@ -48,8 +48,8 @@ func (t *Golog) Log(args *gologme_types.DataLogRequest) int {
 
 func NewGolog(typ, fn string) *Golog {
 	datastore, err := store.CreateDataStore(map[string]string{
-		"DATASTORE":      typ,
-		"DATASTORE_PATH": fn,
+		"DATASTORE":     typ,
+		"DATASTORE_URL": fn,
 	})
 	if err != nil {
 		log.Fatal(err)

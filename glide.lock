@@ -1,5 +1,5 @@
-hash: 2cf6b20ec076577452003f9d43f14e4a29d2bfa11eb2be131f2195ef225044f6
-updated: 2016-04-16T21:32:14.990419126Z
+hash: e2efd16a6022dd590988350c4463e29bd2b9851d735dd85130b9a339d0bc7535
+updated: 2016-04-17T01:32:28.45445164Z
 imports:
 - name: github.com/BurntSushi/xgb
   version: d3d84afd14161dc1c07449d8f9feb2dca6ccc10b
@@ -17,10 +17,6 @@ imports:
   version: 5bc359e9ad5cb47312fe2ef8d0651dafab381f27
   subpackages:
   - json
-- name: github.com/jmoiron/sqlx
-  version: 398dd5876282499cdfd4cb8ea0f31a672abe9495
-  subpackages:
-  - reflectx
 - name: github.com/jteeuwen/go-bindata
   version: a0ff2567cfb70903282db057e799fd826784d41d
 - name: github.com/lib/pq

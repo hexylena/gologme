@@ -273,10 +273,10 @@ func (ds *SqliteSQLDataStore) ExportEventsByDate(tm time.Time) *gologme.EventLog
 
 func NewSqliteSQLDataStore(conf map[string]string) (DataStore, error) {
 	var dsn string
-	if val, ok := conf["DATASTORE_PATH"]; ok {
+	if val, ok := conf["DATASTORE_URL"]; ok {
 		dsn = val
 	} else {
-		return nil, errors.New(fmt.Sprintf("%s is required for the sqlite datastore", "DATASTORE_PATH"))
+		return nil, errors.New(fmt.Sprintf("%s is required for the sqlite datastore", "DATASTORE_URL"))
 	}
 
 	db, err := sql.Open("sqlite3", dsn)
