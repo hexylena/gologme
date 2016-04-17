@@ -11,7 +11,7 @@ var title_mappings = [],
     display_groups = {},
     hacking_titles = [];
 
-getJSON_CACHEHACK("/static/rules.json").then(function(data){
+$.get("/static/rules.json").then(function(data){
     title_mappings = data.title_mappings;
     display_groups = data.display_groups;
     hacking_titles = data.hacking_titles;

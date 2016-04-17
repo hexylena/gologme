@@ -27,6 +27,8 @@
         {"pattern": "Shutter"          , "mapto": "Desktop"},
         {"pattern": "Screenshot"       , "mapto": "Desktop"},
         {"pattern": "Save As"          , "mapto": "Desktop"},
+        {"pattern": "Åpne filen"       , "mapto": "Desktop"},
+        {"pattern": "Enigmail"       , "mapto": "Desktop"},
         {"pattern": "Open Files"       , "mapto": "Desktop"},
         {"pattern": "Find and Replace" , "mapto": "Desktop"},
         {"pattern":"Firefox"           , "mapto": "Internet Browsing"},
@@ -64,6 +66,7 @@
         {"pattern":"TIS-100"    , "mapto":"Gaming"},
         {"pattern":"Open Media" , "mapto":"Entertainment"},
         {"pattern":"mplayer2"   , "mapto":"Entertainment"},
+        {"pattern":"mpv"        , "mapto":"Entertainment"},
         {"pattern":"Netflix"    , "mapto":"Entertainment"},
         {"pattern":"YouTube"    , "mapto":"Entertainment"},
         {"pattern":"VLC"        , "mapto":"Entertainment"},
@@ -135,22 +138,10 @@
         {"pattern":"__LOCKEDSCREEN","mapto":"Locked Screen"}
     ],
     "display_groups": [
-        {
-            "title": "Reading/Writing",
-            "children": ["Internet Browsing", "Email", "Desktop", "Writing"]
-        },
-        {
-            "title": "Entertainment",
-            "children": ["Entertainment", "Social", "Reading", "Gaming"]
-        },
-        {
-            "title": "Work",
-            "children": ["Misc Terminal", "Reading Documentation", "Terminal", "Coding", "SSH", "Work", "Work/Comms", "Work/Writing", "Work/Teaching"]
-        },
-        {
-            "title": "Other",
-            "children": ["Locked Screen", "MISC"]
-        }
+        ["Internet Browsing", "Email", "Desktop", "Writing"],
+        ["Entertainment", "Social", "Reading", "Gaming"],
+        ["Misc Terminal", "Reading Documentation", "Terminal", "Coding", "SSH", "Work", "Work/Comms", "Work/Writing", "Work/Teaching"],
+        ["Locked Screen", "MISC"]
     ],
     "hacking_titles": [
         "Terminal", "Coding", "Reading Documentation", "SSH", "Work"
