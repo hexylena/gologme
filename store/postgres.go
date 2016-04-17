@@ -32,11 +32,11 @@ func (ds *PostgreSQLDataStore) LogToDb(uid int, windowlogs []*gologme.WindowLogs
 	if err != nil {
 		log.Fatal(err)
 	}
-	wl_stmt, err := tx.Prepare("insert into windowLogs (uid, time, name) values (?, ?, ?)")
+	wl_stmt, err := tx.Prepare("insert into windowLogs (uid, time, name) values ($1, $2, $3)")
 	if err != nil {
 		log.Fatal(err)
 	}
-	kl_stmt, err := tx.Prepare("insert into keyLogs (uid, time, count) values (?, ?, ?)")
+	kl_stmt, err := tx.Prepare("insert into keyLogs (uid, time, count) values ($1, $2, $3)")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -70,7 +70,7 @@ func (ds *PostgreSQLDataStore) LogToDb(uid int, windowlogs []*gologme.WindowLogs
 func (ds *PostgreSQLDataStore) CheckAuth(user string, key string) (int, error) {
 	// Pretty assuredly not safe from timing attacks.
 	var id int
-	err := ds.DB.QueryRow("SELECT id FROM users WHERE username = ? AND api_key = ?", user, key).Scan(&id)
+	err := ds.DB.QueryRow("SELECT id FROM users WHERE username = $1 AND api_key = $2", user, key).Scan(&id)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -113,7 +113,7 @@ func (ds *PostgreSQLDataStore) MinDate() int {
 
 func (ds *PostgreSQLDataStore) FindUserNameById(id int) (string, error) {
 	var username string
-	err := ds.DB.QueryRow("SELECT username FROM users WHERE id = ?", id).Scan(&username)
+	err := ds.DB.QueryRow("SELECT username FROM users WHERE id = $1", id).Scan(&username)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return "", UserNotFoundError
@@ -124,7 +124,7 @@ func (ds *PostgreSQLDataStore) FindUserNameById(id int) (string, error) {
 }
 
 func (ds *PostgreSQLDataStore) exportWindowLogsByRange(t0 int64, t1 int64) []*gologme.SEvent {
-	stmt, err := ds.DB.Prepare("select time, name from windowLogs where time >= ? and time < ? order by id")
+	stmt, err := ds.DB.Prepare("select time, name from windowLogs where time >= $1 and time < $2 order by id")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -156,7 +156,7 @@ func (ds *PostgreSQLDataStore) exportWindowLogsByRange(t0 int64, t1 int64) []*go
 }
 
 func (ds *PostgreSQLDataStore) exportKeyLogsByRange(t0 int64, t1 int64) []*gologme.IEvent {
-	stmt, err := ds.DB.Prepare("select time, count from keyLogs where time >= ? and time < ? order by id")
+	stmt, err := ds.DB.Prepare("select time, count from keyLogs where time >= $1 and time < $2 order by id")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -188,7 +188,7 @@ func (ds *PostgreSQLDataStore) exportKeyLogsByRange(t0 int64, t1 int64) []*golog
 }
 
 func (ds *PostgreSQLDataStore) exportBlog(t0 int64, t1 int64) []*gologme.SEvent {
-	stmt, err := ds.DB.Prepare("select time, type, contents from notes where time >= ? and time < ? and type = ? order by id")
+	stmt, err := ds.DB.Prepare("select time, type, contents from notes where time >= $1 and time < $2 and type = $3 order by id")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -220,7 +220,7 @@ func (ds *PostgreSQLDataStore) exportBlog(t0 int64, t1 int64) []*gologme.SEvent 
 }
 
 func (ds *PostgreSQLDataStore) exportNotes(t0 int64, t1 int64) []*gologme.SEvent {
-	stmt, err := ds.DB.Prepare("select time, type, contents from notes where time >= ? and time < ? and type = ? order by id")
+	stmt, err := ds.DB.Prepare("select time, type, contents from notes where time >= $1 and time < $2 and type = $3 order by id")
 	if err != nil {
 		log.Fatal(err)
 	}
