@@ -2,22 +2,22 @@ package store
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	"log"
 	"strings"
 	"time"
 
 	gologme "github.com/erasche/gologme/types"
-	_ "github.com/lib/pq"
+	_ "github.com/lib/pq" // postgres module
 )
 
-//The first implementation.
+//PostgreSQLDataStore struct
 type PostgreSQLDataStore struct {
 	DSN string
 	DB  *sql.DB
 }
 
+// SetupDb runs any migrations needed
 func (ds *PostgreSQLDataStore) SetupDb() {
 	_, err := ds.DB.Exec(
 		strings.Replace(DB_SCHEMA, "id integer not null primary key autoincrement", "id serial not null primary key", -1),
@@ -27,34 +27,35 @@ func (ds *PostgreSQLDataStore) SetupDb() {
 	}
 }
 
+// LogToDb logs a set of windowLogs and keyLogs to the DB
 func (ds *PostgreSQLDataStore) LogToDb(uid int, windowlogs []*gologme.WindowLogs, keylogs []*gologme.KeyLogs) {
 	tx, err := ds.DB.Begin()
 	if err != nil {
 		log.Fatal(err)
 	}
-	wl_stmt, err := tx.Prepare("insert into windowLogs (uid, time, name) values ($1, $2, $3)")
+	wlStmt, err := tx.Prepare("insert into windowLogs (uid, time, name) values ($1, $2, $3)")
 	if err != nil {
 		log.Fatal(err)
 	}
-	kl_stmt, err := tx.Prepare("insert into keyLogs (uid, time, count) values ($1, $2, $3)")
+	klStmt, err := tx.Prepare("insert into keyLogs (uid, time, count) values ($1, $2, $3)")
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer wl_stmt.Close()
-	defer kl_stmt.Close()
+	defer wlStmt.Close()
+	defer klStmt.Close()
 
 	wll := len(windowlogs)
 	log.Printf("%d window logs %d key logs from [%d]\n", wll, len(keylogs), uid)
 
 	for _, w := range keylogs {
-		_, err = kl_stmt.Exec(uid, w.Time.Unix(), w.Count)
+		_, err = klStmt.Exec(uid, w.Time.Unix(), w.Count)
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
 
 	for i, w := range windowlogs {
-		_, err = wl_stmt.Exec(uid, w.Time.Unix(), w.Name)
+		_, err = wlStmt.Exec(uid, w.Time.Unix(), w.Name)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -67,6 +68,7 @@ func (ds *PostgreSQLDataStore) LogToDb(uid int, windowlogs []*gologme.WindowLogs
 	tx.Commit()
 }
 
+// CheckAuth of the user+key, returning -1 or the user's ID
 func (ds *PostgreSQLDataStore) CheckAuth(user string, key string) (int, error) {
 	// Pretty assuredly not safe from timing attacks.
 	var id int
@@ -81,10 +83,12 @@ func (ds *PostgreSQLDataStore) CheckAuth(user string, key string) (int, error) {
 	return id, nil
 }
 
+// Name of the DS implementatino
 func (ds *PostgreSQLDataStore) Name() string {
 	return "PostgreSQLDataStore"
 }
 
+// MaxDate returns latest log entry
 func (ds *PostgreSQLDataStore) MaxDate() int {
 	var mtime int
 	err := ds.DB.QueryRow("SELECT time FROM windowLogs ORDER BY time DESC LIMIT 1").Scan(&mtime)
@@ -98,6 +102,7 @@ func (ds *PostgreSQLDataStore) MaxDate() int {
 	return mtime
 }
 
+// MinDate returns first log entry
 func (ds *PostgreSQLDataStore) MinDate() int {
 	var mtime int
 	err := ds.DB.QueryRow("SELECT time FROM windowLogs ORDER BY time ASC LIMIT 1").Scan(&mtime)
@@ -111,7 +116,8 @@ func (ds *PostgreSQLDataStore) MinDate() int {
 	return mtime
 }
 
-func (ds *PostgreSQLDataStore) FindUserNameById(id int) (string, error) {
+// FindUserNameByID returns a username for a given ID
+func (ds *PostgreSQLDataStore) FindUserNameByID(id int) (string, error) {
 	var username string
 	err := ds.DB.QueryRow("SELECT username FROM users WHERE id = $1", id).Scan(&username)
 	if err != nil {
@@ -251,6 +257,7 @@ func (ds *PostgreSQLDataStore) exportNotes(t0 int64, t1 int64) []*gologme.SEvent
 	return logs
 }
 
+// ExportEventsByDate extracts events for a given day
 func (ds *PostgreSQLDataStore) ExportEventsByDate(tm time.Time) *gologme.EventLog {
 	t0 := Ulogme7amTime(tm)
 	t1 := Ulogme7amTime(Tomorrow(tm))
@@ -271,12 +278,13 @@ func (ds *PostgreSQLDataStore) ExportEventsByDate(tm time.Time) *gologme.EventLo
 	}
 }
 
+// NewPostgreSQLDataStore builds a new PG DS
 func NewPostgreSQLDataStore(conf map[string]string) (DataStore, error) {
 	var dsn string
 	if val, ok := conf["DATASTORE_URL"]; ok {
 		dsn = val
 	} else {
-		return nil, errors.New(fmt.Sprintf("%s is required for the postgres datastore", "DATASTORE_URL"))
+		return nil, fmt.Errorf("%s is required for the postgres datastore", "DATASTORE_URL")
 	}
 
 	db, err := sql.Open("postgres", dsn)

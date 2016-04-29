@@ -12,6 +12,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Events lists events for a given day
 func Events(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	i, err := strconv.ParseInt(vars["date"], 10, 64)
@@ -28,26 +29,26 @@ func Events(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
-type eventListJson struct {
+type eventListJSON struct {
 	FName string `json:"fname"`
 	T0    int    `json:"t0"`
 	T1    int    `json:"t1"`
 }
 
+// ExportList produces custom json struct required by ulogme UI
 func ExportList(w http.ResponseWriter, r *http.Request) {
-	min_time, max_time := golog.RecordedDataRange()
-	// add a day to max_time
-	max_time.Add(time.Hour * 12)
+	minTime, maxTime := golog.RecordedDataRange()
+	// add a day to maxTime
+	maxTime.Add(time.Hour * 12)
 	// Convert to u7am
-	imin_time := util.Ulogme7amTime(min_time)
-	imax_time := util.Ulogme7amTime(max_time)
+	iminTime := util.Ulogme7amTime(minTime)
+	imaxTime := util.Ulogme7amTime(maxTime)
 	//{"fname": "/api/events/1448197200", "t0": 1448197200, "t1": 1448283600}
-
-	eventList := make([]*eventListJson, 0)
+	eventList := make([]*eventListJSON, 0)
 	var aDayInSeconds = int64((time.Hour * 24).Seconds())
 	var i int64
-	for i = imin_time; i < imax_time; i += aDayInSeconds {
-		eventList = append(eventList, &eventListJson{
+	for i = iminTime; i < imaxTime; i += aDayInSeconds {
+		eventList = append(eventList, &eventListJSON{
 			FName: fmt.Sprintf("/api/events/%d", int(i)),
 			T0:    int(i),
 			T1:    int(i + aDayInSeconds),

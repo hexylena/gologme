@@ -15,8 +15,8 @@ type lgr struct {
 	WindowLogger loggers.LogGenerator
 	Receiver     *Receiver
 
-	wLogs []*gologme.WindowLogs
-	kLogs []*gologme.KeyLogs
+	winLogs []*gologme.WindowLogs
+	keyLogs []*gologme.KeyLogs
 }
 
 func (l *lgr) setupLoggers() {
@@ -39,8 +39,8 @@ func (l *lgr) setupLoggers() {
 
 	l.KeyLogger = keyLogger
 	l.WindowLogger = windowLogger
-	l.wLogs = make([]*gologme.WindowLogs, 0)
-	l.kLogs = make([]*gologme.KeyLogs, 0)
+	l.winLogs = make([]*gologme.WindowLogs, 0)
+	l.keyLogs = make([]*gologme.KeyLogs, 0)
 }
 
 func (l *lgr) Updater(windowLogGranularity int, keyLogGranularity int) {
@@ -52,8 +52,8 @@ func (l *lgr) Updater(windowLogGranularity int, keyLogGranularity int) {
 		for _ = range c {
 			newWLogs := l.WindowLogger.GetFreshestTxtLogs()
 			if newWLogs != nil {
-				l.wLogs = append(
-					l.wLogs,
+				l.winLogs = append(
+					l.winLogs,
 					newWLogs,
 				)
 			}
@@ -68,8 +68,8 @@ func (l *lgr) Updater(windowLogGranularity int, keyLogGranularity int) {
 		for _ = range c {
 			newKLogs := l.KeyLogger.GetFreshestNumLogs()
 			if newKLogs != nil {
-				l.kLogs = append(
-					l.kLogs,
+				l.keyLogs = append(
+					l.keyLogs,
 					newKLogs,
 				)
 			}
@@ -78,17 +78,18 @@ func (l *lgr) Updater(windowLogGranularity int, keyLogGranularity int) {
 }
 
 func (l *lgr) SendLogs() {
-	widx := len(l.wLogs)
-	kidx := len(l.kLogs)
+	widx := len(l.winLogs)
+	kidx := len(l.keyLogs)
 
-	l.Receiver.Send(l.wLogs[:widx], l.kLogs[:kidx])
+	l.Receiver.Send(l.winLogs[:widx], l.keyLogs[:kidx])
 
 	// This seems like we need a sync on it, but I'm not smart enough for that
 	// stuff just yet.
-	l.wLogs = l.wLogs[widx:]
-	l.kLogs = l.kLogs[kidx:]
+	l.winLogs = l.winLogs[widx:]
+	l.keyLogs = l.keyLogs[kidx:]
 }
 
+// Golog function which starts local loggers
 func Golog(windowLogGranularity int, keyLogGranularity int, standalone bool, serverAddr string) {
 	// Setup our receiver
 	receiver := &Receiver{
@@ -105,14 +106,14 @@ func Golog(windowLogGranularity int, keyLogGranularity int, standalone bool, ser
 	l.Updater(windowLogGranularity, keyLogGranularity)
 
 	// Trap the exit signal
-	exit_chan := make(chan os.Signal, 1)
-	signal.Notify(exit_chan, os.Interrupt)
-	signal.Notify(exit_chan, syscall.SIGTERM)
+	exitChan := make(chan os.Signal, 1)
+	signal.Notify(exitChan, os.Interrupt)
+	signal.Notify(exitChan, syscall.SIGTERM)
 
 	// And push remaining entries to the server
 	go func() {
 		// In cleanup, we need to
-		<-exit_chan
+		<-exitChan
 		l.SendLogs()
 		os.Exit(0)
 	}()

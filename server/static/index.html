@@ -1,54 +1,28 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>ulogme</title>
+<html lang="en" ng-app="phonecatApp">
+<head>
+  <meta charset="utf-8">
+  <title>Google Phone Gallery</title>
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/animations.css">
 
-    <link href='css/index_style.css' rel='stylesheet' type='text/css'>
+  <script src="bower_components/jquery/dist/jquery.js"></script>
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-animate/angular-animate.js"></script>
+  <script src="bower_components/angular-route/angular-route.js"></script>
+  <script src="bower_components/angular-resource/angular-resource.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/controllers.js"></script>
+  <script src="js/filters.js"></script>
+  <script src="js/services.js"></script>
+</head>
+<body>
 
-    <script src="js/jquery-1.8.3.min.js"></script>
-    <script src="js/spin.min.js"></script>
-    <script src="js/render_utils.js"></script>
-    <script src="js/render_settings.js"></script>
-    <script src="js/d3.min.js" charset="utf-8"></script>
-    <script src="js/d3utils.js" charset="utf-8"></script>
-    <script src="js/underscore.min.js" charset="utf-8"></script>
-    <script src="js/ulogme_common.js" charset="utf-8"></script>
-  </head>
-  <body onload="start()">
-    <div id="spinnerdiv"></div>
-    <div id="reloadbutton">&#10226</div>
-    <div id="overviewlink"><a href="overview.html">Overview</a></div>
-    <h1>ulogme</h1>
-    <div>
-      <div id="leftarrow" class="arrow">&lt</div>
-      <div id="rightarrow" class="arrow">&gt</div>
-      <div id="header"></div>
-    </div>
-    <div id="wrap">
-      <div id="blogwrap">
-        <pre id="blogpre"></pre>
-        <div id="blogenter">
-          <textarea id="blogentertxt"></textarea>
-          <button id="blogentersubmit">Submit</button>
-        </div>
-      </div>
-      <div id="keystats"></div>
-      <div id="keygraph"></div>
-      <div id="notesinfo">
-        <div id="notesinfohide">X</div>
-        <div>
-          <div id="notesmsg"></div>
-          <input type="text" id="notetext">
-          <div id="notesadd">Add</div>
-        </div>
-      </div>
-      <div id="notesvis"></div>
-      <div id="hackingvis"></div>
-      <div id="eventvis"></div>
-      <div id="piechart"></div>
-    </div>
-  <script src="js/ulogme.js" charset="utf-8"></script>
-  </body>
+  <div class="view-container">
+    <div ng-view class="view-frame"></div>
+  </div>
+
+</body>
 </html>

@@ -7,7 +7,7 @@ import (
 
 	gologme "github.com/erasche/gologme/util"
 	"github.com/gorilla/mux"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/mattn/go-sqlite3" // sqlite
 )
 
 var golog *gologme.Golog

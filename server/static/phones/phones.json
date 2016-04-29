@@ -1,0 +1,17 @@
+[
+    {
+        "age": 3, 
+        "id": "dell-streak-7", 
+        "imageUrl": "img/phones/dell-streak-7.0.jpg", 
+        "name": "Dell Streak 7", 
+        "snippet": "Introducing Dell\u2122 Streak 7. Share photos, videos and movies together. It\u2019s small enough to carry around, big enough to gather around."
+    }, 
+    {
+        "age": 5, 
+        "carrier": "Dell", 
+        "id": "dell-venue", 
+        "imageUrl": "img/phones/dell-venue.0.jpg", 
+        "name": "Dell Venue", 
+        "snippet": "The Dell Venue; Your Personal Express Lane to Everything"
+    }
+]

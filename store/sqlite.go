@@ -8,15 +8,16 @@ import (
 	"time"
 
 	gologme "github.com/erasche/gologme/types"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/mattn/go-sqlite3" // sqlite module
 )
 
-//The first implementation.
+// SqliteSQLDataStore struct
 type SqliteSQLDataStore struct {
 	DSN string
 	DB  *sql.DB
 }
 
+// SetupDb runs any migrations needed
 func (ds *SqliteSQLDataStore) SetupDb() {
 	_, err := ds.DB.Exec(DB_SCHEMA)
 	if err != nil {
@@ -24,34 +25,35 @@ func (ds *SqliteSQLDataStore) SetupDb() {
 	}
 }
 
+// LogToDb logs a set of windowLogs and keyLogs to the DB
 func (ds *SqliteSQLDataStore) LogToDb(uid int, windowlogs []*gologme.WindowLogs, keylogs []*gologme.KeyLogs) {
 	tx, err := ds.DB.Begin()
 	if err != nil {
 		log.Fatal(err)
 	}
-	wl_stmt, err := tx.Prepare("insert into windowLogs (uid, time, name) values (?, ?, ?)")
+	wlStmt, err := tx.Prepare("insert into windowLogs (uid, time, name) values (?, ?, ?)")
 	if err != nil {
 		log.Fatal(err)
 	}
-	kl_stmt, err := tx.Prepare("insert into keyLogs (uid, time, count) values (?, ?, ?)")
+	klStmt, err := tx.Prepare("insert into keyLogs (uid, time, count) values (?, ?, ?)")
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer wl_stmt.Close()
-	defer kl_stmt.Close()
+	defer wlStmt.Close()
+	defer klStmt.Close()
 
 	wll := len(windowlogs)
 	log.Printf("%d window logs %d key logs from [%d]\n", wll, len(keylogs), uid)
 
 	for _, w := range keylogs {
-		_, err = kl_stmt.Exec(uid, w.Time.Unix(), w.Count)
+		_, err = klStmt.Exec(uid, w.Time.Unix(), w.Count)
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
 
 	for i, w := range windowlogs {
-		_, err = wl_stmt.Exec(uid, w.Time.Unix(), w.Name)
+		_, err = wlStmt.Exec(uid, w.Time.Unix(), w.Name)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -64,6 +66,7 @@ func (ds *SqliteSQLDataStore) LogToDb(uid int, windowlogs []*gologme.WindowLogs,
 	tx.Commit()
 }
 
+// CheckAuth of the user+key, returning -1 or the user's ID
 func (ds *SqliteSQLDataStore) CheckAuth(user string, key string) (int, error) {
 	// Pretty assuredly not safe from timing attacks.
 	stmt, err := ds.DB.Prepare("select id from users where username = ? and api_key = ?")
@@ -81,10 +84,12 @@ func (ds *SqliteSQLDataStore) CheckAuth(user string, key string) (int, error) {
 	return uid, nil
 }
 
+// Name of the DS implementatino
 func (ds *SqliteSQLDataStore) Name() string {
 	return "SqliteSQLDataStore"
 }
 
+// MaxDate returns latest log entry
 func (ds *SqliteSQLDataStore) MaxDate() int {
 	var mtime int
 	err := ds.DB.QueryRow("SELECT time FROM windowLogs ORDER BY time DESC LIMIT 1").Scan(&mtime)
@@ -98,6 +103,7 @@ func (ds *SqliteSQLDataStore) MaxDate() int {
 	return mtime
 }
 
+// MinDate returns first log entry
 func (ds *SqliteSQLDataStore) MinDate() int {
 	var mtime int
 	err := ds.DB.QueryRow("SELECT time FROM windowLogs ORDER BY time ASC LIMIT 1").Scan(&mtime)
@@ -111,7 +117,8 @@ func (ds *SqliteSQLDataStore) MinDate() int {
 	return mtime
 }
 
-func (ds *SqliteSQLDataStore) FindUserNameById(id int) (string, error) {
+// FindUserNameByID returns a username for a given ID
+func (ds *SqliteSQLDataStore) FindUserNameByID(id int) (string, error) {
 	var username string
 	err := ds.DB.QueryRow("SELECT username FROM users WHERE id = ?", id).Scan(&username)
 	if err != nil {
@@ -251,6 +258,7 @@ func (ds *SqliteSQLDataStore) exportNotes(t0 int64, t1 int64) []*gologme.SEvent 
 	return logs
 }
 
+// ExportEventsByDate extracts events for a given day
 func (ds *SqliteSQLDataStore) ExportEventsByDate(tm time.Time) *gologme.EventLog {
 	t0 := Ulogme7amTime(tm)
 	t1 := Ulogme7amTime(Tomorrow(tm))
@@ -271,6 +279,7 @@ func (ds *SqliteSQLDataStore) ExportEventsByDate(tm time.Time) *gologme.EventLog
 	}
 }
 
+// NewSqliteSQLDataStore builds a new sqlite3 DS
 func NewSqliteSQLDataStore(conf map[string]string) (DataStore, error) {
 	var dsn string
 	if val, ok := conf["DATASTORE_URL"]; ok {
