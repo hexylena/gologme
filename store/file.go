@@ -79,7 +79,7 @@ func (ds *FileDataStore) FindUserNameByID(id int) (string, error) {
 	return "admin", nil
 }
 
-func (ds *FileDataStore) exportWindowLogsByRange(t0 int64, t1 int64) []*gologme.SEvent {
+func (ds *FileDataStore) ExportWindowLogsByRange(t0 int64, t1 int64) []*gologme.SEvent {
 	return nil
 }
 

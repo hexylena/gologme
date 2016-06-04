@@ -30,6 +30,7 @@ type DataStore interface {
 	Name() string
 	FindUserNameByID(id int) (string, error)
 	SetupDb()
+	ExportWindowLogsByRange(t0, t1 int64) []*gologme.SEvent
 	ExportEventsByDate(tm time.Time) *gologme.EventLog
 	MinDate() int
 	MaxDate() int

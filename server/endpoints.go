@@ -16,8 +16,17 @@ import (
 var dateLayout = "2006-01-02"
 
 // Events lists the last N recorded events
-func RecentEvents(w http.ResponseWriter, r *http.Request) {
+func RecentWindows(w http.ResponseWriter, r *http.Request) {
+	var tm = time.Now()
+	t0 := util.Ulogme7amTime(tm)
+	t1 := util.Ulogme7amTime(util.Tomorrow(tm))
+	windowData := golog.ExportWindowLogsByRange(t0, t1)
 
+	js, err := json.MarshalIndent(windowData, "", "  ")
+	if err != nil {
+		// handle
+	}
+	w.Write(js)
 }
 
 // Events lists events for a given day

@@ -1,7 +1,6 @@
 package gologme
 
 import (
-	"fmt"
 	"log"
 	"time"
 
@@ -18,8 +17,11 @@ func (t *Golog) LogToDb(uid int, windowlogs []*gologme_types.WindowLogs, keylogs
 }
 
 func (t *Golog) ExportEventsByDate(tm time.Time) *gologme_types.EventLog {
-	fmt.Printf("%#v\n", t)
 	return t.DS.ExportEventsByDate(tm)
+}
+
+func (t *Golog) ExportWindowLogsByRange(t1, t2 int64) []*gologme_types.SEvent {
+	return t.DS.ExportWindowLogsByRange(t1, t2)
 }
 
 func (t *Golog) RecordedDataRange() (time.Time, time.Time) {

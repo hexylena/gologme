@@ -129,7 +129,7 @@ func (ds *PostgreSQLDataStore) FindUserNameByID(id int) (string, error) {
 	return username, nil
 }
 
-func (ds *PostgreSQLDataStore) exportWindowLogsByRange(t0 int64, t1 int64) []*gologme.SEvent {
+func (ds *PostgreSQLDataStore) ExportWindowLogsByRange(t0 int64, t1 int64) []*gologme.SEvent {
 	stmt, err := ds.DB.Prepare("select time, name from windowLogs where time >= $1 and time < $2 order by id")
 	if err != nil {
 		log.Fatal(err)
@@ -271,7 +271,7 @@ func (ds *PostgreSQLDataStore) ExportEventsByDate(tm time.Time) *gologme.EventLo
 	}
 
 	return &gologme.EventLog{
-		Window_events:  ds.exportWindowLogsByRange(t0, t1),
+		Window_events:  ds.ExportWindowLogsByRange(t0, t1),
 		Keyfreq_events: ds.exportKeyLogsByRange(t0, t1),
 		Note_events:    ds.exportNotes(t0, t1),
 		Blog:           blogstr,
