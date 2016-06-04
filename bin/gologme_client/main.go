@@ -5,6 +5,8 @@ import (
 	"os/user"
 	"path"
 
+	"strings"
+
 	"github.com/codegangsta/cli"
 	"github.com/erasche/gologme/client"
 	"github.com/erasche/gologme/server"
@@ -51,10 +53,15 @@ func main() {
 
 	app.Action = func(c *cli.Context) {
 		if c.Bool("standalone") {
+			serverAddr := c.String("serverAddr")
+			if strings.Count(serverAddr, ":") > 1 {
+				serverAddr = serverAddr[strings.LastIndex(serverAddr, "/")+1:]
+			}
+
 			go server.ServeFromPath(
 				"sqlite3",
 				c.String("dbPath"),
-				c.String("serverAddr"),
+				serverAddr,
 			)
 		}
 
