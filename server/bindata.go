@@ -14,6 +14,16 @@
 // server/static/js/ulogme.js
 // server/static/js/ulogme_common.js
 // server/static/js/underscore.min.js
+// server/static/neue/.babelrc
+// server/static/neue/.editorconfig
+// server/static/neue/.eslintrc
+// server/static/neue/.gitignore
+// server/static/neue/.travis.yml
+// server/static/neue/README.md
+// server/static/neue/conf.json
+// server/static/neue/gulpfile.babel.js
+// server/static/neue/index.html
+// server/static/neue/package.json
 // server/static/overview.html
 // server/static/rules.json
 // DO NOT EDIT!
@@ -295,6 +305,186 @@ func serverStaticJsUnderscoreMinJs() (*asset, error) {
 	return a, err
 }
 
+// serverStaticNeueBabelrc reads file data from disk. It returns an error on failure.
+func serverStaticNeueBabelrc() (*asset, error) {
+	path := "/home/hxr/work/go/src/github.com/erasche/gologme/server/static/neue/.babelrc"
+	name := "server/static/neue/.babelrc"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// serverStaticNeueEditorconfig reads file data from disk. It returns an error on failure.
+func serverStaticNeueEditorconfig() (*asset, error) {
+	path := "/home/hxr/work/go/src/github.com/erasche/gologme/server/static/neue/.editorconfig"
+	name := "server/static/neue/.editorconfig"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// serverStaticNeueEslintrc reads file data from disk. It returns an error on failure.
+func serverStaticNeueEslintrc() (*asset, error) {
+	path := "/home/hxr/work/go/src/github.com/erasche/gologme/server/static/neue/.eslintrc"
+	name := "server/static/neue/.eslintrc"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// serverStaticNeueGitignore reads file data from disk. It returns an error on failure.
+func serverStaticNeueGitignore() (*asset, error) {
+	path := "/home/hxr/work/go/src/github.com/erasche/gologme/server/static/neue/.gitignore"
+	name := "server/static/neue/.gitignore"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// serverStaticNeueTravisYml reads file data from disk. It returns an error on failure.
+func serverStaticNeueTravisYml() (*asset, error) {
+	path := "/home/hxr/work/go/src/github.com/erasche/gologme/server/static/neue/.travis.yml"
+	name := "server/static/neue/.travis.yml"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// serverStaticNeueReadmeMd reads file data from disk. It returns an error on failure.
+func serverStaticNeueReadmeMd() (*asset, error) {
+	path := "/home/hxr/work/go/src/github.com/erasche/gologme/server/static/neue/README.md"
+	name := "server/static/neue/README.md"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// serverStaticNeueConfJson reads file data from disk. It returns an error on failure.
+func serverStaticNeueConfJson() (*asset, error) {
+	path := "/home/hxr/work/go/src/github.com/erasche/gologme/server/static/neue/conf.json"
+	name := "server/static/neue/conf.json"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// serverStaticNeueGulpfileBabelJs reads file data from disk. It returns an error on failure.
+func serverStaticNeueGulpfileBabelJs() (*asset, error) {
+	path := "/home/hxr/work/go/src/github.com/erasche/gologme/server/static/neue/gulpfile.babel.js"
+	name := "server/static/neue/gulpfile.babel.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// serverStaticNeueIndexHtml reads file data from disk. It returns an error on failure.
+func serverStaticNeueIndexHtml() (*asset, error) {
+	path := "/home/hxr/work/go/src/github.com/erasche/gologme/server/static/neue/index.html"
+	name := "server/static/neue/index.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// serverStaticNeuePackageJson reads file data from disk. It returns an error on failure.
+func serverStaticNeuePackageJson() (*asset, error) {
+	path := "/home/hxr/work/go/src/github.com/erasche/gologme/server/static/neue/package.json"
+	name := "server/static/neue/package.json"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
 // serverStaticOverviewHtml reads file data from disk. It returns an error on failure.
 func serverStaticOverviewHtml() (*asset, error) {
 	path := "/home/hxr/work/go/src/github.com/erasche/gologme/server/static/overview.html"
@@ -397,6 +587,16 @@ var _bindata = map[string]func() (*asset, error){
 	"server/static/js/ulogme.js":                  serverStaticJsUlogmeJs,
 	"server/static/js/ulogme_common.js":           serverStaticJsUlogme_commonJs,
 	"server/static/js/underscore.min.js":          serverStaticJsUnderscoreMinJs,
+	"server/static/neue/.babelrc":                 serverStaticNeueBabelrc,
+	"server/static/neue/.editorconfig":            serverStaticNeueEditorconfig,
+	"server/static/neue/.eslintrc":                serverStaticNeueEslintrc,
+	"server/static/neue/.gitignore":               serverStaticNeueGitignore,
+	"server/static/neue/.travis.yml":              serverStaticNeueTravisYml,
+	"server/static/neue/README.md":                serverStaticNeueReadmeMd,
+	"server/static/neue/conf.json":                serverStaticNeueConfJson,
+	"server/static/neue/gulpfile.babel.js":        serverStaticNeueGulpfileBabelJs,
+	"server/static/neue/index.html":               serverStaticNeueIndexHtml,
+	"server/static/neue/package.json":             serverStaticNeuePackageJson,
 	"server/static/overview.html":                 serverStaticOverviewHtml,
 	"server/static/rules.json":                    serverStaticRulesJson,
 }
@@ -461,6 +661,18 @@ var _bintree = &bintree{nil, map[string]*bintree{
 				"ulogme.js":                  &bintree{serverStaticJsUlogmeJs, map[string]*bintree{}},
 				"ulogme_common.js":           &bintree{serverStaticJsUlogme_commonJs, map[string]*bintree{}},
 				"underscore.min.js":          &bintree{serverStaticJsUnderscoreMinJs, map[string]*bintree{}},
+			}},
+			"neue": &bintree{nil, map[string]*bintree{
+				".babelrc":          &bintree{serverStaticNeueBabelrc, map[string]*bintree{}},
+				".editorconfig":     &bintree{serverStaticNeueEditorconfig, map[string]*bintree{}},
+				".eslintrc":         &bintree{serverStaticNeueEslintrc, map[string]*bintree{}},
+				".gitignore":        &bintree{serverStaticNeueGitignore, map[string]*bintree{}},
+				".travis.yml":       &bintree{serverStaticNeueTravisYml, map[string]*bintree{}},
+				"README.md":         &bintree{serverStaticNeueReadmeMd, map[string]*bintree{}},
+				"conf.json":         &bintree{serverStaticNeueConfJson, map[string]*bintree{}},
+				"gulpfile.babel.js": &bintree{serverStaticNeueGulpfileBabelJs, map[string]*bintree{}},
+				"index.html":        &bintree{serverStaticNeueIndexHtml, map[string]*bintree{}},
+				"package.json":      &bintree{serverStaticNeuePackageJson, map[string]*bintree{}},
 			}},
 			"overview.html": &bintree{serverStaticOverviewHtml, map[string]*bintree{}},
 			"rules.json":    &bintree{serverStaticRulesJson, map[string]*bintree{}},
