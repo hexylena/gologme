@@ -37,7 +37,7 @@ type eventListJson struct {
 func ExportList(w http.ResponseWriter, r *http.Request) {
 	min_time, max_time := golog.RecordedDataRange()
 	// add a day to max_time
-	max_time.Add(time.Hour * 12)
+	max_time.Add(time.Hour * 48)
 	// Convert to u7am
 	imin_time := util.Ulogme7amTime(min_time)
 	imax_time := util.Ulogme7amTime(max_time)

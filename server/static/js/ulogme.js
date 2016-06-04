@@ -17,10 +17,12 @@ function createPieChart(es, etypes) {
     dtall += e.dt;
   });
   var stats = _.map(etypes, function(m) {
-    return {val: counts[m],
-            name: m + " (" + (100*counts[m]/dtall).toFixed(1) + "%)",
-            col: color_hash[m]
-           };
+      if(counts[m]){
+            return {val: counts[m],
+                    name: m + " (" + (100*counts[m]/dtall).toFixed(1) + "%)",
+                    col: color_hash[m]
+                   };
+      }
   });
 
   // create a pie chart with d3
