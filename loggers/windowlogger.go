@@ -31,7 +31,7 @@ func NewWindowLogger(conf map[string]string) (LogGenerator, error) {
 }
 
 func (logger *WindowLogger) GetFreshestTxtLogs() *gologme.WindowLogs {
-	if logger.isScreenSaverRunning() {
+	if logger.isScreenSaverActive() {
 		// Locked
 		return &gologme.WindowLogs{
 			Name: gologme.LOCKED_SCREEN,
@@ -107,8 +107,8 @@ func (logger *WindowLogger) getCurWindowTitle() (name string, err error) {
 	return string(reply.Value), nil
 }
 
-func (logger *WindowLogger) isScreenSaverRunning() bool {
+func (logger *WindowLogger) isScreenSaverActive() bool {
 	cmd := exec.Command("/usr/bin/xscreensaver-command", "-time")
 	stdout, _ := cmd.Output()
-	return !strings.Contains(string(stdout), "non-blanked")
+	return strings.Contains(string(stdout), "screen locked")
 }
