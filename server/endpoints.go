@@ -17,10 +17,13 @@ var dateLayout = "2006-01-02"
 
 // Events lists the last N recorded events
 func RecentWindows(w http.ResponseWriter, r *http.Request) {
-	var tm = time.Now()
-	t0 := util.Ulogme7amTime(tm)
-	t1 := util.Ulogme7amTime(util.Tomorrow(tm))
+	t1 := time.Now().Unix()
+	t0 := t1 - (60 * 15)
 	windowData := golog.ExportWindowLogsByRange(t0, t1)
+	if len(windowData) > 30 {
+		windowData = windowData[len(windowData)-30:]
+	}
+	fmt.Printf("%#v\n", windowData)
 
 	js, err := json.MarshalIndent(windowData, "", "  ")
 	if err != nil {
