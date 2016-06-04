@@ -27,6 +27,12 @@ qc:
 test: deps gofmt
 	go test -v $$(glide novendor)
 
-server/bindata.go: server/static/*
-	go-bindata-assetfs -pkg server -debug server/static/*
+frontend/node_modules: frontend/package.json
+	cd frontend && npm install
+
+frontend/dist: frontend/src frontend/package.json
+	cd frontend && npm run build
+
+server/bindata.go: frontend/dist
+	go-bindata-assetfs -pkg server -debug frontend/dist/*
 	mv bindata_assetfs.go server/bindata.go
