@@ -12,3 +12,4 @@ import:
 - package: github.com/mattn/go-sqlite3
 - package: github.com/jteeuwen/go-bindata
 - package: github.com/elazarl/go-bindata-assetfs
+- package: github.com/gorilla/handlers

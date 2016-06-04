@@ -1,5 +1,5 @@
-hash: e2efd16a6022dd590988350c4463e29bd2b9851d735dd85130b9a339d0bc7535
-updated: 2016-04-17T01:32:28.45445164Z
+hash: 5036873b73ee1615e98017f21aaf5cfbe114472ab884d4ae03300b2c951719e0
+updated: 2016-06-04T18:23:42.057465403Z
 imports:
 - name: github.com/BurntSushi/xgb
   version: d3d84afd14161dc1c07449d8f9feb2dca6ccc10b
@@ -11,6 +11,8 @@ imports:
   version: 57eb5e1fc594ad4b0b1dbea7b286d299e0cb43c2
 - name: github.com/gorilla/context
   version: 1ea25387ff6f684839d82767c1733ff4d4d15d0a
+- name: github.com/gorilla/handlers
+  version: 66e6c6f01d8da976ee113437745ca029c2b585a6
 - name: github.com/gorilla/mux
   version: 147a95f5e36a65f1c7b29440b9b0283aab154693
 - name: github.com/gorilla/rpc
@@ -25,4 +27,12 @@ imports:
   - oid
 - name: github.com/mattn/go-sqlite3
   version: 45f056ca8f5ef4ee3f68796167a0a0e6a6214813
+- name: github.com/rs/cors
+  version: 3ca2b550f6a4333b63c845850f760a7d00412cd6
+- name: github.com/rs/xhandler
+  version: d9d9599b6aaf6a058cb7b1f48291ded2cbd13390
+- name: golang.org/x/net
+  version: c4c3ea71919de159c9e246d7be66deb7f0a39a58
+  subpackages:
+  - context
 devImports: []

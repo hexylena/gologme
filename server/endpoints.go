@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/erasche/gologme/types"
@@ -12,15 +13,26 @@ import (
 	"github.com/gorilla/mux"
 )
 
+var dateLayout = "2006-01-02"
+
 // Events lists events for a given day
 func Events(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
+	var tm time.Time
 	i, err := strconv.ParseInt(vars["date"], 10, 64)
 	if err != nil {
-		// handle this
+		if strings.Count(vars["date"], "-") == 2 {
+			tm, err = time.Parse(dateLayout, vars["date"])
+			if err != nil {
+				return
+			}
+		} else {
+			return
+		}
+	} else {
+		tm = time.Unix(i, 0)
 	}
 
-	tm := time.Unix(i, 0)
 	eventData := golog.ExportEventsByDate(tm)
 	js, err := json.MarshalIndent(eventData, "", "  ")
 	if err != nil {

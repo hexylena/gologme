@@ -1,0 +1,3 @@
+[submodule "server/static"]
+	path = frontend
+	url = https://github.com/erasche/gologme-frontend
