@@ -123,7 +123,7 @@ func (ds *SqliteSQLDataStore) FindUserNameByID(id int) (string, error) {
 	err := ds.DB.QueryRow("SELECT username FROM users WHERE id = ?", id).Scan(&username)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return "", UserNotFoundError
+			return "", ErrUserNotFound
 		}
 		return "", err
 	}
@@ -291,7 +291,7 @@ func NewSqliteSQLDataStore(conf map[string]string) (DataStore, error) {
 	db, err := sql.Open("sqlite3", dsn)
 	if err != nil {
 		log.Panicf("Failed to connect to datastore: %s", err.Error())
-		return nil, FailedToConnect
+		return nil, ErrFailedToConnect
 	}
 
 	return &SqliteSQLDataStore{

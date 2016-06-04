@@ -76,7 +76,7 @@ func (ds *PostgreSQLDataStore) CheckAuth(user string, key string) (int, error) {
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return -1, UserNotFoundError
+			return -1, ErrUserNotFound
 		}
 		return -1, err
 	}
@@ -122,7 +122,7 @@ func (ds *PostgreSQLDataStore) FindUserNameByID(id int) (string, error) {
 	err := ds.DB.QueryRow("SELECT username FROM users WHERE id = $1", id).Scan(&username)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return "", UserNotFoundError
+			return "", ErrUserNotFound
 		}
 		return "", err
 	}
@@ -290,7 +290,7 @@ func NewPostgreSQLDataStore(conf map[string]string) (DataStore, error) {
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
 		log.Panicf("Failed to connect to datastore: %s", err.Error())
-		return nil, FailedToConnect
+		return nil, ErrFailedToConnect
 	}
 
 	return &PostgreSQLDataStore{
