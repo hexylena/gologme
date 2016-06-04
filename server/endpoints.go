@@ -15,6 +15,11 @@ import (
 
 var dateLayout = "2006-01-02"
 
+// Events lists the last N recorded events
+func RecentEvents(w http.ResponseWriter, r *http.Request) {
+
+}
+
 // Events lists events for a given day
 func Events(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)

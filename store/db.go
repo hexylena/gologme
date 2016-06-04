@@ -55,6 +55,7 @@ func Register(name string, factory DataStoreFactory) {
 func init() {
 	Register("postgres", NewPostgreSQLDataStore)
 	Register("sqlite3", NewSqliteSQLDataStore)
+	Register("file", NewFileDataStore)
 }
 
 // CreateDataStore creates a new database connection
