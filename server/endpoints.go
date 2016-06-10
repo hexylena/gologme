@@ -23,7 +23,6 @@ func RecentWindows(w http.ResponseWriter, r *http.Request) {
 	if len(windowData) > 30 {
 		windowData = windowData[len(windowData)-30:]
 	}
-	fmt.Printf("%#v\n", windowData)
 
 	js, err := json.MarshalIndent(windowData, "", "  ")
 	if err != nil {
@@ -89,7 +88,6 @@ func ExportList(w http.ResponseWriter, r *http.Request) {
 
 func DataUpload(w http.ResponseWriter, r *http.Request) {
 	//var logs
-	fmt.Println("endpoints.DataUpload")
 	decoder := json.NewDecoder(r.Body)
 	logData := new(types.DataLogRequest)
 	err := decoder.Decode(&logData)
@@ -99,7 +97,6 @@ func DataUpload(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid Route Data", http.StatusBadRequest)
 		return
 	}
-	fmt.Println("endpoints.DataUpload 2")
 
 	golog.Log(logData)
 }

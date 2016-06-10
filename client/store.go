@@ -28,9 +28,6 @@ func (r *Receiver) Send(wl []*gologme.WindowLogs, kl []*gologme.KeyLogs) {
 		fmt.Println(err)
 	}
 
-	fmt.Println(kl)
-	fmt.Println(wl)
-
 	//// Post to our server URL
 	req, err := http.NewRequest(
 		"POST",
