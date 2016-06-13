@@ -6,24 +6,34 @@ tools running in the background and they don't always exit as cleanly as
 they should. That and I can't compile logs in a single place. This is even
 worse when considering android in the mix.
 
-And mostly I want to practice go more :)
+And mostly I want to practice golang more :)
+
+![](./media/web-ui.png)
+
+Snazzy new web UI (WIP), included in both the client + server components.
 
 ## Goals
 
 - [x] Feature parity with ulogme (for the subset which I care about)
     - [x] Window Logging
     - [x] Key Logging
+    - [ ] Mouse Logging
     - [x] Notes
     - [x] Blog
     - [x] lockscreen detection
         - [x] xscreensaver
-        - [ ] PRs welcome!
+        - [ ] ...
     - [ ] cross platform logging
       - https://github.com/kavu/AyeAye/ maybe
       - PRs welcome since I don't have a mac.
+- [ ] Web UI
+    - [ ] Skeleton
+    - [x] Recent logs
+    - [ ] Overview page
+    - [ ] Day pages
 - [x] Ulogme import/export. Near perfect roundtripping
 - [ ] Android client
-- [x] multi-user support (Why? Who knows. Seems easy to tack on)
+- [ ] multi-user support (Why? Who knows. Seems easy to tack on)
 - [x] standalone mode (in opposition to client/server)
 - [x] no sudo required!
 
