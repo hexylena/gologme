@@ -1,7 +1,8 @@
 package server
 
 import (
-	"fmt"
+	//"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -25,13 +26,13 @@ var (
 func authenticationHandler(fn func(w http.ResponseWriter, r *http.Request, uid int)) http.HandlerFunc {
 	//, username string, APIkey string
 	return func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("asdf")
 		api_key := r.Header.Get(xAuthorization)
 		if len(api_key) == 0 {
 			return
 		}
 		uid, err := golog.Authenticate(api_key)
 		if err != nil {
+			log.Print(err)
 			return
 		}
 		fn(w, r, uid)

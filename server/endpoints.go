@@ -3,6 +3,7 @@ package server
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -26,7 +27,7 @@ func RecentWindows(w http.ResponseWriter, r *http.Request, uid int) {
 
 	js, err := json.MarshalIndent(windowData, "", "  ")
 	if err != nil {
-		// handle
+		log.Println(err)
 	}
 	w.Write(js)
 }
@@ -40,9 +41,11 @@ func Events(w http.ResponseWriter, r *http.Request, uid int) {
 		if strings.Count(vars["date"], "-") == 2 {
 			tm, err = time.Parse(dateLayout, vars["date"])
 			if err != nil {
+				log.Println(err)
 				return
 			}
 		} else {
+			log.Println(err)
 			return
 		}
 	} else {
@@ -52,6 +55,7 @@ func Events(w http.ResponseWriter, r *http.Request, uid int) {
 	eventData := golog.ExportEventsByDate(tm)
 	js, err := json.MarshalIndent(eventData, "", "  ")
 	if err != nil {
+		log.Println(err)
 		// handle
 	}
 	w.Write(js)
@@ -93,6 +97,7 @@ func DataUpload(w http.ResponseWriter, r *http.Request) {
 	err := decoder.Decode(&logData)
 
 	if err != nil {
+		log.Println(err)
 		//log.Error(fmt.Sprintf("Error unmarshalling posted data %s", err))
 		http.Error(w, "Invalid Route Data", http.StatusBadRequest)
 		return
@@ -114,24 +119,28 @@ func AddNote(w http.ResponseWriter, r *http.Request, uid int) {
 	logData := new(types.NoteBlogRequest)
 	err := decoder.Decode(&logData)
 	if err != nil {
+		log.Println(err)
 		http.Error(w, "Invalid Route Data", http.StatusBadRequest)
 		return
 	}
 
 	tm, err := time.Parse(dateLayout, logData.Date)
 	if err != nil {
+		log.Println(err)
 		http.Error(w, "Invalid Route Data (Date)", http.StatusBadRequest)
 		return
 	}
 
 	err = golog.CreateNote(uid, tm, logData.Message)
 	if err != nil {
+		log.Println(err)
 		http.Error(w, "Server Error", http.StatusInternalServerError)
 		return
 	}
 
 	js, err := json.MarshalIndent(logData, "", "  ")
 	if err != nil {
+		log.Println(err)
 		// handle
 	}
 	w.Write(js)
@@ -143,24 +152,28 @@ func AddBlog(w http.ResponseWriter, r *http.Request, uid int) {
 	logData := new(types.NoteBlogRequest)
 	err := decoder.Decode(&logData)
 	if err != nil {
+		log.Println(err)
 		http.Error(w, "Invalid Route Data", http.StatusBadRequest)
 		return
 	}
 
 	tm, err := time.Parse(dateLayout, logData.Date)
 	if err != nil {
+		log.Println(err)
 		http.Error(w, "Invalid Route Data (Date)", http.StatusBadRequest)
 		return
 	}
 
 	err = golog.CreateBlog(uid, tm, logData.Message)
 	if err != nil {
+		log.Println(err)
 		http.Error(w, "Server Error", http.StatusInternalServerError)
 		return
 	}
 
 	js, err := json.MarshalIndent(logData, "", "  ")
 	if err != nil {
+		log.Println(err)
 		// handle
 	}
 	w.Write(js)
