@@ -66,17 +66,17 @@ func (ds *SqliteSQLDataStore) LogToDb(uid int, windowlogs []*gologme.WindowLogs,
 	tx.Commit()
 }
 
-// CheckAuth of the user+key, returning -1 or the user's ID
-func (ds *SqliteSQLDataStore) CheckAuth(user string, key string) (int, error) {
+// CheckAuth of the key, returning -1 or the user's ID
+func (ds *SqliteSQLDataStore) CheckAuth(key string) (int, error) {
 	// Pretty assuredly not safe from timing attacks.
-	stmt, err := ds.DB.Prepare("select id from users where username = ? and api_key = ?")
+	stmt, err := ds.DB.Prepare("select id from users where api_key = ?")
 	if err != nil {
 		return -1, err
 	}
 	defer stmt.Close()
 
 	var uid int
-	err = stmt.QueryRow(user, key).Scan(&uid)
+	err = stmt.QueryRow(key).Scan(&uid)
 	if err != nil {
 		return -1, err
 	}
@@ -84,48 +84,50 @@ func (ds *SqliteSQLDataStore) CheckAuth(user string, key string) (int, error) {
 	return uid, nil
 }
 
-func (ds *SqliteSQLDataStore) CreateNote(uid int, date time.Time, message string) {
+func (ds *SqliteSQLDataStore) CreateBlogNote(uid int, date time.Time, message string, noteType int) {
 	tx, err := ds.DB.Begin()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	noteInsert, err := tx.Prepare("insert into notes (uid, time, type, contents) values (?, ?, ?, ?)")
-	if err != nil {
-		log.Fatal(err)
-	}
+	var noteId int
+	err = tx.QueryRow("SELECT id FROM notes WHERE uid = ? and time = ? and type = ?", uid, date.Unix(), noteType).Scan(&noteId)
 
-	defer noteInsert.Close()
-
-	_, err = noteInsert.Exec(uid, date.Unix(), gologme.NOTE_TYPE, message)
+	// If there's an error, that means it's a new note, just insert.
 	if err != nil {
-		log.Fatal(err)
+		noteInsert, err := tx.Prepare("insert into notes (uid, time, type, contents) values (?, ?, ?, ?)")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		defer noteInsert.Close()
+
+		_, err = noteInsert.Exec(uid, date.Unix(), noteType, message)
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		noteUpdate, err := tx.Prepare("update notes set contents = ? where id = ?")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		defer noteUpdate.Close()
+		_, err = noteUpdate.Exec(message, noteId)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 	tx.Commit()
-
 	return
 }
 
 func (ds *SqliteSQLDataStore) CreateBlog(uid int, date time.Time, message string) {
-	tx, err := ds.DB.Begin()
-	if err != nil {
-		log.Fatal(err)
-	}
+	ds.CreateBlogNote(uid, date, message, gologme.BLOG_TYPE)
+}
 
-	noteInsert, err := tx.Prepare("insert into notes (uid, time, type, contents) values (?, ?, ?, ?)")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer noteInsert.Close()
-
-	_, err = noteInsert.Exec(uid, date.Unix(), gologme.BLOG_TYPE, message)
-	if err != nil {
-		log.Fatal(err)
-	}
-	tx.Commit()
-
-	return
+func (ds *SqliteSQLDataStore) CreateNote(uid int, date time.Time, message string) {
+	ds.CreateBlogNote(uid, date, message, gologme.NOTE_TYPE)
 }
 
 // Name of the DS implementatino

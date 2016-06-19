@@ -16,7 +16,7 @@ import (
 var dateLayout = "2006-01-02"
 
 // Events lists the last N recorded events
-func RecentWindows(w http.ResponseWriter, r *http.Request) {
+func RecentWindows(w http.ResponseWriter, r *http.Request, uid int) {
 	t1 := time.Now().Unix()
 	t0 := t1 - (60 * 15)
 	windowData := golog.ExportWindowLogsByRange(t0, t1)
@@ -32,7 +32,7 @@ func RecentWindows(w http.ResponseWriter, r *http.Request) {
 }
 
 // Events lists events for a given day
-func Events(w http.ResponseWriter, r *http.Request) {
+func Events(w http.ResponseWriter, r *http.Request, uid int) {
 	vars := mux.Vars(r)
 	var tm time.Time
 	i, err := strconv.ParseInt(vars["date"], 10, 64)
@@ -64,7 +64,7 @@ type eventListJSON struct {
 }
 
 // ExportList produces custom json struct required by ulogme UI
-func ExportList(w http.ResponseWriter, r *http.Request) {
+func ExportList(w http.ResponseWriter, r *http.Request, uid int) {
 	minTime, maxTime := golog.RecordedDataRange()
 	// add a day to maxTime
 	maxTime.Add(time.Hour * 12)
@@ -101,11 +101,15 @@ func DataUpload(w http.ResponseWriter, r *http.Request) {
 	golog.Log(logData)
 }
 
-func AddNote(w http.ResponseWriter, r *http.Request) {
+func KeyEvents(w http.ResponseWriter, r *http.Request, uid int) {
 
 }
 
-func AddBlog(w http.ResponseWriter, r *http.Request) {
+func WinEvents(w http.ResponseWriter, r *http.Request, uid int) {
+
+}
+
+func AddNote(w http.ResponseWriter, r *http.Request, uid int) {
 	decoder := json.NewDecoder(r.Body)
 	logData := new(types.NoteBlogRequest)
 	err := decoder.Decode(&logData)
@@ -120,7 +124,36 @@ func AddBlog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = golog.CreateBlog(logData.User, logData.ApiKey, tm, logData.Message)
+	err = golog.CreateNote(uid, tm, logData.Message)
+	if err != nil {
+		http.Error(w, "Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	js, err := json.MarshalIndent(logData, "", "  ")
+	if err != nil {
+		// handle
+	}
+	w.Write(js)
+
+}
+
+func AddBlog(w http.ResponseWriter, r *http.Request, uid int) {
+	decoder := json.NewDecoder(r.Body)
+	logData := new(types.NoteBlogRequest)
+	err := decoder.Decode(&logData)
+	if err != nil {
+		http.Error(w, "Invalid Route Data", http.StatusBadRequest)
+		return
+	}
+
+	tm, err := time.Parse(dateLayout, logData.Date)
+	if err != nil {
+		http.Error(w, "Invalid Route Data (Date)", http.StatusBadRequest)
+		return
+	}
+
+	err = golog.CreateBlog(uid, tm, logData.Message)
 	if err != nil {
 		http.Error(w, "Server Error", http.StatusInternalServerError)
 		return
@@ -133,6 +166,6 @@ func AddBlog(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
-func Index(w http.ResponseWriter, r *http.Request) {
+func Index(w http.ResponseWriter, r *http.Request, uid int) {
 	fmt.Fprintf(w, "Hello")
 }

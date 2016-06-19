@@ -34,7 +34,6 @@ type DataStore interface {
 		message string,
 	)
 	CheckAuth(
-		user string,
 		key string,
 	) (int, error)
 	Name() string

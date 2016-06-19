@@ -68,11 +68,11 @@ func (ds *PostgreSQLDataStore) LogToDb(uid int, windowlogs []*gologme.WindowLogs
 	tx.Commit()
 }
 
-// CheckAuth of the user+key, returning -1 or the user's ID
-func (ds *PostgreSQLDataStore) CheckAuth(user string, key string) (int, error) {
+// CheckAuth of the key, returning -1 or the user's ID
+func (ds *PostgreSQLDataStore) CheckAuth(key string) (int, error) {
 	// Pretty assuredly not safe from timing attacks.
 	var id int
-	err := ds.DB.QueryRow("SELECT id FROM users WHERE username = $1 AND api_key = $2", user, key).Scan(&id)
+	err := ds.DB.QueryRow("SELECT id FROM users WHERE api_key = $1", key).Scan(&id)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -84,46 +84,48 @@ func (ds *PostgreSQLDataStore) CheckAuth(user string, key string) (int, error) {
 }
 
 func (ds *PostgreSQLDataStore) CreateNote(uid int, date time.Time, message string) {
-	tx, err := ds.DB.Begin()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	noteInsert, err := tx.Prepare("insert into notes (uid, time, type, contents) values ($1, $2, $3, $4)")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer noteInsert.Close()
-
-	_, err = noteInsert.Exec(uid, date.Unix(), gologme.NOTE_TYPE, message)
-	if err != nil {
-		log.Fatal(err)
-	}
-	tx.Commit()
-
-	return
+	ds.CreateBlogNote(uid, date, message, gologme.NOTE_TYPE)
 }
 
 func (ds *PostgreSQLDataStore) CreateBlog(uid int, date time.Time, message string) {
+	ds.CreateBlogNote(uid, date, message, gologme.BLOG_TYPE)
+}
+
+func (ds *PostgreSQLDataStore) CreateBlogNote(uid int, date time.Time, message string, noteType int) {
 	tx, err := ds.DB.Begin()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	noteInsert, err := tx.Prepare("insert into notes (uid, time, type, contents) values ($1, $2, $3, $4)")
-	if err != nil {
-		log.Fatal(err)
-	}
+	var noteId int
+	err = tx.QueryRow("SELECT id FROM notes WHERE uid = $1 and time = $2 and type = $3", uid, date.Unix(), noteType).Scan(&noteId)
 
-	defer noteInsert.Close()
-
-	_, err = noteInsert.Exec(uid, date.Unix(), gologme.BLOG_TYPE, message)
+	// If there's an error, that means it's a new note, just insert.
 	if err != nil {
-		log.Fatal(err)
+		noteInsert, err := tx.Prepare("insert into notes (uid, time, type, contents) values ($1, $2, $3, $4)")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		defer noteInsert.Close()
+
+		_, err = noteInsert.Exec(uid, date.Unix(), noteType, message)
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		noteUpdate, err := tx.Prepare("update notes set contents = $1 where id = $2")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		defer noteUpdate.Close()
+		_, err = noteUpdate.Exec(message, noteId)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 	tx.Commit()
-
 	return
 }
 

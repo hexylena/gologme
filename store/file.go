@@ -65,8 +65,8 @@ func (ds *FileDataStore) CreateBlog(uid int, date time.Time, message string) {
 	}
 }
 
-// CheckAuth of the user+key, returning -1 or the user's ID
-func (ds *FileDataStore) CheckAuth(user string, key string) (int, error) {
+// CheckAuth of the key, returning -1 or the user's ID
+func (ds *FileDataStore) CheckAuth(key string) (int, error) {
 	// Pretty assuredly not safe from timing attacks.
 	return 0, nil
 }

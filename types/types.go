@@ -12,8 +12,6 @@ type DataLogRequest struct {
 }
 
 type NoteBlogRequest struct {
-	User    string `json:"user"`
-	ApiKey  string `json:"api_key"`
 	Date    string `json:"date"`
 	Message string `json:"message"`
 }

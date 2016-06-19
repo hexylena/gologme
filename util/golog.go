@@ -16,20 +16,20 @@ func (t *Golog) LogToDb(uid int, windowlogs []*gologme_types.WindowLogs, keylogs
 	t.DS.LogToDb(uid, windowlogs, keylogs)
 }
 
-func (t *Golog) CreateBlog(username string, api_key string, date time.Time, message string) error {
-	uid, err := t.DS.CheckAuth(username, api_key)
+func (t *Golog) Authenticate(APIKey string) (int, error) {
+	uid, err := t.DS.CheckAuth(APIKey)
 	if err != nil {
-		return err
+		return -1, err
 	}
+	return uid, err
+}
+
+func (t *Golog) CreateBlog(uid int, date time.Time, message string) error {
 	t.DS.CreateBlog(uid, date, message)
 	return nil
 }
 
-func (t *Golog) CreateNote(username string, api_key string, date time.Time, message string) error {
-	uid, err := t.DS.CheckAuth(username, api_key)
-	if err != nil {
-		return err
-	}
+func (t *Golog) CreateNote(uid int, date time.Time, message string) error {
 	t.DS.CreateNote(uid, date, message)
 	return nil
 }
@@ -50,7 +50,7 @@ func (t *Golog) RecordedDataRange() (time.Time, time.Time) {
 
 func (t *Golog) Log(args *gologme_types.DataLogRequest) int {
 	log.Printf("golog.Log\n")
-	uid, err := t.DS.CheckAuth(args.User, args.ApiKey)
+	uid, err := t.DS.CheckAuth(args.ApiKey)
 	if err != nil {
 		log.Fatal(err)
 		return 1
