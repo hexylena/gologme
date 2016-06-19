@@ -51,6 +51,20 @@ func (ds *FileDataStore) LogToDb(uid int, windowlogs []*gologme.WindowLogs, keyl
 	}
 }
 
+func (ds *FileDataStore) CreateNote(uid int, date time.Time, message string) {
+	noteText := fmt.Sprintf("%d %d", date.Unix(), message)
+	if _, err := ds.Notes.WriteString(noteText); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func (ds *FileDataStore) CreateBlog(uid int, date time.Time, message string) {
+	noteText := fmt.Sprintf("%d %d", date.Unix(), message)
+	if _, err := ds.Blog.WriteString(noteText); err != nil {
+		log.Fatal(err)
+	}
+}
+
 // CheckAuth of the user+key, returning -1 or the user's ID
 func (ds *FileDataStore) CheckAuth(user string, key string) (int, error) {
 	// Pretty assuredly not safe from timing attacks.

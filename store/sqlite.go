@@ -84,6 +84,50 @@ func (ds *SqliteSQLDataStore) CheckAuth(user string, key string) (int, error) {
 	return uid, nil
 }
 
+func (ds *SqliteSQLDataStore) CreateNote(uid int, date time.Time, message string) {
+	tx, err := ds.DB.Begin()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	noteInsert, err := tx.Prepare("insert into notes (uid, time, type, contents) values (?, ?, ?, ?)")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer noteInsert.Close()
+
+	_, err = noteInsert.Exec(uid, date.Unix(), gologme.NOTE_TYPE, message)
+	if err != nil {
+		log.Fatal(err)
+	}
+	tx.Commit()
+
+	return
+}
+
+func (ds *SqliteSQLDataStore) CreateBlog(uid int, date time.Time, message string) {
+	tx, err := ds.DB.Begin()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	noteInsert, err := tx.Prepare("insert into notes (uid, time, type, contents) values (?, ?, ?, ?)")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer noteInsert.Close()
+
+	_, err = noteInsert.Exec(uid, date.Unix(), gologme.BLOG_TYPE, message)
+	if err != nil {
+		log.Fatal(err)
+	}
+	tx.Commit()
+
+	return
+}
+
 // Name of the DS implementatino
 func (ds *SqliteSQLDataStore) Name() string {
 	return "SqliteSQLDataStore"

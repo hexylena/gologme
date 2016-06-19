@@ -101,6 +101,38 @@ func DataUpload(w http.ResponseWriter, r *http.Request) {
 	golog.Log(logData)
 }
 
+func AddNote(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func AddBlog(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	logData := new(types.NoteBlogRequest)
+	err := decoder.Decode(&logData)
+	if err != nil {
+		http.Error(w, "Invalid Route Data", http.StatusBadRequest)
+		return
+	}
+
+	tm, err := time.Parse(dateLayout, logData.Date)
+	if err != nil {
+		http.Error(w, "Invalid Route Data (Date)", http.StatusBadRequest)
+		return
+	}
+
+	err = golog.CreateBlog(logData.User, logData.ApiKey, tm, logData.Message)
+	if err != nil {
+		http.Error(w, "Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	js, err := json.MarshalIndent(logData, "", "  ")
+	if err != nil {
+		// handle
+	}
+	w.Write(js)
+}
+
 func Index(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello")
 }

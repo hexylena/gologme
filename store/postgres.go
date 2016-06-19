@@ -83,6 +83,50 @@ func (ds *PostgreSQLDataStore) CheckAuth(user string, key string) (int, error) {
 	return id, nil
 }
 
+func (ds *PostgreSQLDataStore) CreateNote(uid int, date time.Time, message string) {
+	tx, err := ds.DB.Begin()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	noteInsert, err := tx.Prepare("insert into notes (uid, time, type, contents) values ($1, $2, $3, $4)")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer noteInsert.Close()
+
+	_, err = noteInsert.Exec(uid, date.Unix(), gologme.NOTE_TYPE, message)
+	if err != nil {
+		log.Fatal(err)
+	}
+	tx.Commit()
+
+	return
+}
+
+func (ds *PostgreSQLDataStore) CreateBlog(uid int, date time.Time, message string) {
+	tx, err := ds.DB.Begin()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	noteInsert, err := tx.Prepare("insert into notes (uid, time, type, contents) values ($1, $2, $3, $4)")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer noteInsert.Close()
+
+	_, err = noteInsert.Exec(uid, date.Unix(), gologme.BLOG_TYPE, message)
+	if err != nil {
+		log.Fatal(err)
+	}
+	tx.Commit()
+
+	return
+}
+
 // Name of the DS implementatino
 func (ds *PostgreSQLDataStore) Name() string {
 	return "PostgreSQLDataStore"

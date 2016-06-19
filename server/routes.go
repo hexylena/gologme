@@ -20,6 +20,8 @@ type Routes []Route
 var routes = Routes{
 	Route{"Events", "GET", "/api/events/{date:[0-9-]+}", Events},
 	Route{"RecentWindows", "GET", "/api/events/recent", RecentWindows},
+	Route{"AddNote", "POST", "/api/notes", AddNote},
+	Route{"AddBlog", "POST", "/api/blog", AddBlog},
 	Route{"DataUpload", "POST", "/logs", DataUpload},
 	Route{"ExportList", "GET", "/export_list.json", ExportList},
 }

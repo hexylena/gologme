@@ -23,6 +23,16 @@ type DataStore interface {
 		windowlogs []*gologme.WindowLogs,
 		keylogs []*gologme.KeyLogs,
 	)
+	CreateNote(
+		uid int,
+		date time.Time,
+		message string,
+	)
+	CreateBlog(
+		uid int,
+		date time.Time,
+		message string,
+	)
 	CheckAuth(
 		user string,
 		key string,
@@ -56,7 +66,7 @@ func Register(name string, factory DataStoreFactory) {
 func init() {
 	Register("postgres", NewPostgreSQLDataStore)
 	Register("sqlite3", NewSqliteSQLDataStore)
-	Register("file", NewFileDataStore)
+	//Register("file", NewFileDataStore)
 }
 
 // CreateDataStore creates a new database connection

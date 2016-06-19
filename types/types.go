@@ -11,6 +11,13 @@ type DataLogRequest struct {
 	KeyLogs []*KeyLogs
 }
 
+type NoteBlogRequest struct {
+	User    string `json:"user"`
+	ApiKey  string `json:"api_key"`
+	Date    string `json:"date"`
+	Message string `json:"message"`
+}
+
 type WindowLogs struct {
 	Name string
 	Time time.Time

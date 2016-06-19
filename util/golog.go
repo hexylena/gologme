@@ -16,6 +16,24 @@ func (t *Golog) LogToDb(uid int, windowlogs []*gologme_types.WindowLogs, keylogs
 	t.DS.LogToDb(uid, windowlogs, keylogs)
 }
 
+func (t *Golog) CreateBlog(username string, api_key string, date time.Time, message string) error {
+	uid, err := t.DS.CheckAuth(username, api_key)
+	if err != nil {
+		return err
+	}
+	t.DS.CreateBlog(uid, date, message)
+	return nil
+}
+
+func (t *Golog) CreateNote(username string, api_key string, date time.Time, message string) error {
+	uid, err := t.DS.CheckAuth(username, api_key)
+	if err != nil {
+		return err
+	}
+	t.DS.CreateNote(uid, date, message)
+	return nil
+}
+
 func (t *Golog) ExportEventsByDate(tm time.Time) *gologme_types.EventLog {
 	return t.DS.ExportEventsByDate(tm)
 }
